@@ -1,0 +1,30 @@
+Napraviti aplikaciju koja ce da omoguci interne humanitarne licitacije na nivou kompanije Levi9.
+
+Kreiranje licitacije i licitiranje je moguce samo za interne ulogovane korisnike.
+U narednim fazama cemo napraviti da se useri loguju kroz SSO.
+AWS Cognito service (sa mockovanim userima ce biti inicijalno resenje)
+Registracija ce biti ostavljena za narednu fazu, NTH.
+
+Predmet licitacije treba da sadrzi naslov, opis predmeta koji se prodaje, sliku/slike, datum od kad do kad vazi licitacija, pocetnu cenu, pobednika licitacije i status da li je NEAKTIVNA/AKTIVNA/ZAVRSENA/REALIZOVANA
+Svaki ulogovani user moze da licitira, ali svaka naredna licitacija mora da ima vrednost vecu nego prethodno licitirana cena za taj predmet licitacije.
+User koji je poslednji licitirao, odnosno koji je ponudio najvecu sumu novca pobedjuje licitaciju nakon isteka vremena licitacije.
+Nakon isteka vremena za licitaciju, licitacija se zavrsava i vise se ne primaju licitacije za odredjeni predmet.
+Nakon zavrsene licitacije poslati email useru koji je pobedio.
+
+Samo kreator licitacije moze da prevremeno zatvori licitaciju.
+Nakon zatvaranja licitacije, user koji je kreirao moze da promeni status na REALIZOVANA (nakon sto je primopredaja zapravo i uradjena)
+Svaki user bi trebao da vidi sve svoje postavljene licitacije i licitacije na kojima je pobedio. (Omoguciti sortiranje po datumu i statusu, kao i pretragu po naslovu licitacije)
+
+Samo AKTIVNE licitacije se prikazuju na dashboard-u userima koji zele da licitiraju.
+
+Dashboard, odnosno osnovna strana treba da sadrzi takodje i odredjene statistike,
+npr: top 5 usera koji imaju najvise postavljenih licitacija, top 5 usera koji su pobedili na licitacijama, top 5 usera koji su prodali najskuplje predmete
+
+Neulogovani useri mogu da vide samo Aktivne licitacije i statistiku koja je u prethodnoj recenici opisana.
+
+Ukoliko niko nije licitirao predmet tokom zadatog roka, takva licitacije moze da se ponovo aktivira promenom datuma zavrsetka na novu vrednost u buducnosti.
+Minimalno i maksimalno vreme trajanja licitacije je da bude konfigurabilno.
+
+
+Tech stack: Javascript/Typescript, Serverless Framework, AWS
+Frontend: AngularX
