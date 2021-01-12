@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: backend
+service: auction9-backend
 
 # Create an optimized package for our functions 
 package:
