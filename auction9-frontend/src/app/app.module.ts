@@ -8,16 +8,23 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 
 // Components
 import { AppComponent } from './app.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
+import { DataTableComponent } from './data-table/data-table.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    SidenavComponent
+    SidenavComponent,
+    DataTableComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +34,12 @@ import { SidenavComponent } from './sidenav/sidenav.component';
     MatListModule,
     MatToolbarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]
