@@ -18,6 +18,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { AppComponent } from './app.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { DataTableComponent } from './data-table/data-table.component';
+import { HomeComponent } from './home/home.component';
+import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
+import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
 @NgModule({
@@ -25,6 +29,10 @@ import { DataTableComponent } from './data-table/data-table.component';
     AppComponent,
     SidenavComponent,
     DataTableComponent
+    HomeComponent,
+    UserAuctionsComponent,
+    WonAuctionsComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
