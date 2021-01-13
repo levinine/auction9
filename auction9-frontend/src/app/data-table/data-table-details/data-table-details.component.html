@@ -1,0 +1,36 @@
+<mat-card class="bid-card ">
+  <mat-card-header>
+    <div mat-card-avatar class="bid-header-image"></div>
+    <mat-card-title>New Brown Table</mat-card-title>
+    <mat-card-subtitle>Petar Petrovic</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src="https://c1.wallpaperflare.com/preview/592/997/230/wood-desktop-wooden-aerial.jpg" alt="Photo of table" class="product-image">
+  <mat-card-content>
+  	<h2>The highest current bid: 3522 din</h2>
+  	<h3>Remaining time: 1d 14h <i>(25.02.2021, 14:01)</i></h3>
+  	<h4>Status: 
+  		<span class="badge badge-secondary">Inactive</span>
+  		<span class="badge badge-primary">Active</span>
+  		<span class="badge badge-success">Completed</span>
+  		<span class="badge badge-sold">Sold</span>
+  	</h4>
+	<div class="bid-number-container">
+		<h4>Number of bids: 
+			<button mat-mini-fab color="primary" matTooltip="Go to history of all bids"
+        			aria-label="Button that will redirect user to the history of all bids for this product">
+		      +11
+		    </button>
+		</h4>
+	    
+  	</div>
+    <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+  	<mat-form-field class="input-bid">
+	    <input matInput placeholder="Offer must be greater then the current bid: 3522 din">
+  	</mat-form-field>
+    <button mat-raised-button color="primary">Bid</button>
+  </mat-card-actions>
+</mat-card>

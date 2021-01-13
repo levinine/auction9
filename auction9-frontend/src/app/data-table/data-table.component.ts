@@ -7,7 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 export interface BidData {
   id: string;
   name: string;
-  progress: string;
+  price: number;
   action: string;
 }
 
@@ -28,7 +28,7 @@ const NAMES: string[] = [
 
 export class DataTableComponent implements AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'name', 'progress', 'color'];
+  displayedColumns: string[] = ['id', 'name', 'price', 'action'];
   dataSource: MatTableDataSource<BidData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -65,7 +65,7 @@ function createNewUser(id: number): BidData {
   return {
     id: id.toString(),
     name: name,
-    progress: Math.round(Math.random() * 10000).toString(),
+    price: Math.round(Math.random() * 10000),
     action: 'More Details'
   };
 }

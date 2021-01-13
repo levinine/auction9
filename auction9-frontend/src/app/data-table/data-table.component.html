@@ -14,9 +14,9 @@
       </ng-container>
 
       <!-- Progress Column -->
-      <ng-container matColumnDef="progress">
+      <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Price </th>
-        <td mat-cell *matCellDef="let row"> {{row.progress}} din </td>
+        <td mat-cell *matCellDef="let row"> {{row.price}} din </td>
       </ng-container>
 
       <!-- Name Column -->
@@ -26,9 +26,9 @@
       </ng-container>
 
       <!-- Color Column -->
-      <ng-container matColumnDef="color">
+      <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-        <td mat-cell *matCellDef="let row"> <button mat-raised-button color="primary"> {{row.action}} </button></td>
+        <td mat-cell *matCellDef="let row"> <button mat-raised-button color="primary" [routerLink]="['/bid', row.id]"> {{row.action}} </button></td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

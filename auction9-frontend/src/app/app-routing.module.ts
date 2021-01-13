@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
+import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'wonAuctions',
     component: WonAuctionsComponent
+  },
+  {
+    path: 'bid/:id',
+    component: DataTableDetailsComponent
   },
   {
     path: '**',
