@@ -1,3 +1,5 @@
+$color-blue: #3f51b5;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -34,4 +36,8 @@ h1.app-name {
 
 .spacer {
   flex: 1 1 auto;
+}
+
+mat-list-item:hover {
+  color: $color-blue;
 }

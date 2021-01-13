@@ -11,20 +11,29 @@
   </mat-toolbar>
 
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer [opened]="mobileQuery.matches ? 'false' : 'true'"
-      [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+    <mat-sidenav
+      #drawer
+      [opened]="mobileQuery.matches ? 'false' : 'true'"
+      [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <mat-list-item (click)="closeSideNav()">
+        <mat-list-item
+          [routerLink]="['/home']"
+          (click)="closeSideNav()">
           <mat-icon matListIcon>home</mat-icon>
           <a matLine>Home</a>
         </mat-list-item>
 
-        <mat-list-item (click)="closeSideNav()">
+        <mat-list-item
+          [routerLink]="['/userAuctions']"
+          (click)="closeSideNav()">
           <mat-icon matListIcon>bookmarks</mat-icon>
           <a matLine>My auctions</a>
         </mat-list-item>
 
-        <mat-list-item (click)="closeSideNav()">
+        <mat-list-item
+          [routerLink]="['/wonAuctions']"
+          (click)="closeSideNav()">
           <mat-icon matListIcon>emoji_events</mat-icon>
           <a matLine>Won auctions</a>
         </mat-list-item>
