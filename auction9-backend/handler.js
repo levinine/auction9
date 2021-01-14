@@ -2,10 +2,10 @@
 // Configuration is in serverless.yml file inside 'environment:'
 const mysql = require('serverless-mysql')({
   config: {
-    host	: process.env.MYSQL_ENDPOINT,
-    port	: process.env.MYSQL_PORT,
+    host: process.env.MYSQL_ENDPOINT,
+    port: process.env.MYSQL_PORT,
     database: process.env.MYSQL_DATABASE,
-    user	: process.env.MYSQL_USER,
+    user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD
   }
 });
@@ -17,14 +17,16 @@ export const getAuction = async (event, context) => {
 	try {
 		// return ID of auction from path
 		let auctionId = event.pathParameters.id;
-		let auctionResults = await mysql.query(`
-			SELECT * FROM tbl_auction WHERE auctionID=${auctionId}`);
-		console.log(`Auction ID: ${auctionResults[0]}}`);
+		let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
 		return {
 			statusCode: 200,
 			body: `${auctionResults[0]}`,
 		};
 	} catch (error) {
 		console.log(error);
+		return {
+			statusCode: 400,
+			body: "There was an error while getting 'auction'",
+		};
 	}
 };
