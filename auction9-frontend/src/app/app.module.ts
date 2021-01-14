@@ -18,6 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Components
 import { AppComponent } from './app.component';
@@ -28,7 +30,7 @@ import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
-
+import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dial
     WonAuctionsComponent,
     PageNotFoundComponent,
     AddAuctionDialogComponent
+    DataTableDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +64,8 @@ import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dial
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMaterialTimepickerModule,
+    MatCardModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [

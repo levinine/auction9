@@ -28,7 +28,7 @@
         </mat-list-item>
 
         <mat-list-item
-          [routerLink]="['/userAuctions']"
+          [routerLink]="['/myAuctions']"
           (click)="closeSideNav()">
           <mat-icon matListIcon>bookmarks</mat-icon>
           <a matLine>My auctions</a>
@@ -54,6 +54,7 @@
       </button>
     </mat-sidenav>
     <mat-sidenav-content>
+      <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
