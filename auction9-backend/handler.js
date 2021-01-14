@@ -18,6 +18,8 @@ export const getAuction = async (event, context) => {
 		// return ID of auction from path
 		let auctionId = event.pathParameters.id;
 		let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+		// Run clean up function
+		await mysql.end();
 		return {
 			statusCode: 200,
 			body: `${auctionResults[0]}`,
@@ -27,6 +29,27 @@ export const getAuction = async (event, context) => {
 		return {
 			statusCode: 400,
 			body: "There was an error while getting 'auction'",
+		};
+	}
+};
+
+/* getActiveAuctions - will return all auctions with 'active' status
+ * GET: /home
+ */
+export const getActiveAuctions = async (event, context) => {
+	try {
+		let auctionActiveStatus = 'active';
+		let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [auctionActiveStatus]);
+		await mysql.end();
+		return {
+			statusCode: 200,
+			body: `${resultsActiveAuctions}`,
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			statusCode: 400,
+			body: "There was an error while getting 'auctions'",
 		};
 	}
 };
