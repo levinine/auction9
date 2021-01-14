@@ -11,23 +11,19 @@ const mysql = require('serverless-mysql')({
 });
 
 /* getAuction - will return selected auction from DB
- * GET: /auction/id - we get auction by ID
+ * GET: /auctions/id - we get auction by ID
  */
 export const getAuction = async (event, context) => {
 	try {
-		try {
-			// return ID of auction from path
-			let auction_id = event.pathParameters.id;
-			let auction_results = await mysql.query(`
-				SELECT * FROM tbl_auction WHERE auctionID=${auction_id}`);
-			console.log(`Auction ID: ${auction_results[0].auctionID}\nTitle: ${auction_results[0].title}\nPrice: ${auction_results[0].price}`);
-			return {
-				statusCode: 200,
-				body: `Success call: getAuction. Auction ID: ${auction_results[0].auctionID}`,
-			};
-		} catch (error) {
-			console.log(error);
-		}
+		// return ID of auction from path
+		let auctionId = event.pathParameters.id;
+		let auctionResults = await mysql.query(`
+			SELECT * FROM tbl_auction WHERE auctionID=${auctionId}`);
+		console.log(`Auction ID: ${auctionResults[0]}}`);
+		return {
+			statusCode: 200,
+			body: `${auctionResults[0]}`,
+		};
 	} catch (error) {
 		console.log(error);
 	}

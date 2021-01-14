@@ -35,5 +35,5 @@ functions:
     handler: handler.getAuction
     events:
       - http:
-          path: auction/{id}
+          path: auctions/{id}
           method: get
