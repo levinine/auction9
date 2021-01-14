@@ -13,6 +13,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 // Components
 import { AppComponent } from './app.component';
@@ -22,6 +27,7 @@ import { HomeComponent } from './home/home.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
 
 
 @NgModule({
@@ -32,7 +38,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     UserAuctionsComponent,
     WonAuctionsComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    AddAuctionDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -47,9 +54,20 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MatInputModule,
     MatPaginatorModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ],
+  entryComponents: [
+    AddAuctionDialogComponent
+  ]
 })
 export class AppModule { }

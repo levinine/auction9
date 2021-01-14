@@ -1,0 +1,145 @@
+<h1 mat-dialog-title>
+  Add new auction
+</h1>
+<form
+  [formGroup]="addAuctionForm"
+  class="add-auction-form"
+  novalidate>
+
+  <!-- Title -->
+  <mat-form-field>
+    <input
+      #title
+      matInput
+      required
+      formControlName="title"
+      placeholder="Title">
+      <mat-error *ngIf="addAuctionForm.controls.title.hasError('required')">
+        You must enter a title.
+      </mat-error>
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field>
+    <textarea
+      #description
+      matInput
+      required
+      formControlName="description"
+      placeholder="Description">
+    </textarea>
+      <mat-error *ngIf="addAuctionForm.controls.description.hasError('required')">
+        You must enter a description.
+      </mat-error>
+  </mat-form-field>
+
+  <!-- Price -->
+  <mat-form-field>
+    <input
+      #price
+      matInput
+      required
+      formControlName="price"
+      placeholder="Price">
+      <mat-error *ngIf="addAuctionForm.controls.price.hasError('required')">
+        You must enter a price.
+      </mat-error>
+  </mat-form-field>
+
+  <!-- Date picker -->
+  <mat-form-field appearance="fill" class="datepicker">
+    <mat-label>Start and end date</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input
+        matStartDate
+        formControlName="startDate"
+        placeholder="Start date">
+      <input
+        matEndDate
+        formControlName="endDate"
+        placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+
+    <mat-error *ngIf="addAuctionForm.controls.startDate.hasError('matStartDateInvalid')">
+      Invalid start date
+    </mat-error>
+    <mat-error *ngIf="addAuctionForm.controls.endDate.hasError('matEndDateInvalid')">
+      Invalid end date
+    </mat-error>
+    <mat-error *ngIf="addAuctionForm.controls.startDate.hasError('required')">
+      You have to pick start and end date
+    </mat-error>
+  </mat-form-field>
+
+
+  <!-- Start time -->
+  <mat-form-field class="timepicker">
+    <mat-label>Start time</mat-label>
+    <input
+        matInput
+        placeholder="Start time"
+        formControlName="startTime"
+        [ngxTimepicker]="starttimepicker"
+        [format]="24"
+        [value]="'00:00 am'"
+        [defaultValue]="'07:00'"/>
+    <mat-icon matPrefix>
+      schedule
+    </mat-icon>
+    <ngx-material-timepicker #starttimepicker>
+    </ngx-material-timepicker>
+    <mat-error *ngIf="addAuctionForm.controls.startTime.hasError('required')">
+      You have to pick start time
+    </mat-error>
+  </mat-form-field>
+
+  <!-- End time -->
+  <mat-form-field class="timepicker">
+    <mat-label>End time</mat-label>
+    <input
+        matInput
+        placeholder="End time"
+        formControlName="endTime"
+        [ngxTimepicker]="endtimepicker"
+        [format]="24"
+        [value]="'00:00 am'"
+        [defaultValue]="'16:00'"/>
+    <mat-icon matPrefix>
+      schedule
+    </mat-icon>
+    <ngx-material-timepicker #endtimepicker>
+    </ngx-material-timepicker>
+    <mat-error *ngIf="addAuctionForm.controls.endTime.hasError('required')">
+      You have to pick end time
+    </mat-error>
+  </mat-form-field>
+
+  <button
+    color=primary
+    mat-raised-button
+    class="add-auction-button">
+    <span class="material-icons">
+      upload
+    </span>
+    Upload photos
+  </button>
+
+  <!-- Add article button -->
+  <div mat-dialog-actions align="center">
+    <button
+      mat-raised-button
+      mat-dialog-close>
+        Cancel
+    </button>
+    <button
+      mat-raised-button
+      mat-dialog-close
+      cdkFocusInitial
+      color="primary"
+      [disabled]="addAuctionForm.invalid">
+        Create
+    </button>
+  </div>
+</form>
