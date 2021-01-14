@@ -13,6 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Components
 import { AppComponent } from './app.component';
@@ -22,6 +24,7 @@ import { HomeComponent } from './home/home.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
 
 
 @NgModule({
@@ -32,7 +35,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     UserAuctionsComponent,
     WonAuctionsComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DataTableDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MatInputModule,
     MatPaginatorModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatCardModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]
