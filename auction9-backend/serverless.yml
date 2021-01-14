@@ -28,3 +28,12 @@ provider:
     MYSQL_DATABASE: auction9
     MYSQL_USER: root
     MYSQL_PASSWORD: root
+
+functions:
+  # return 'auction' by id
+  getAuction:
+    handler: handler.getAuction
+    events:
+      - http:
+          path: auctions/{id}
+          method: get
