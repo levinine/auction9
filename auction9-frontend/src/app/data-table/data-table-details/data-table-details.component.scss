@@ -1,32 +1,32 @@
 .bid-card {
-  	margin: 40px;
+  margin: 40px;
 }
 
 .bid-header-image {
-  	background-image: url('https://64.media.tumblr.com/ef4e0c2294d9e304e339f19307953e7f/6c205b8b5946f8a9-7c/s250x400/9d66b8e486071ecabe8db5afdfb879a038cc79d5.png');
-  	background-size: cover;
+	background-image: url('https://64.media.tumblr.com/ef4e0c2294d9e304e339f19307953e7f/6c205b8b5946f8a9-7c/s250x400/9d66b8e486071ecabe8db5afdfb879a038cc79d5.png');
+	background-size: cover;
 }
 
 .input-bid {
-	margin: 10px;
-  	min-width: 150px;
-  	max-width: 380px;
-  	width: 100%;
+  margin: 10px;
+	min-width: 150px;
+	max-width: 380px;
+	width: 100%;
 }
 
 .badge-success {
-    color: #fff;
-    background-color: #28a745;
+  color: #fff;
+  background-color: #28a745;
 }
 
 .badge-primary {
-	color: #fff;
-    background-color: #007bff;
+  color: #fff;
+  background-color: #007bff;
 }
 
 .badge-secondary {
 	color: #fff;
-    background-color: #6c757d;
+  background-color: #6c757d;
 }
 
 .badge-sold {
@@ -35,19 +35,19 @@
 }
 
 .badge {
-    display: inline-block;
-    padding: .25em .4em;
-    font-size: 75%;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: .25rem;
+  display: inline-block;
+  padding: .25em .4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
 }
 
 .bid-number-container {
-  	display: flex;
-  	justify-content: center;
-  	width: 120px;
+	display: flex;
+	justify-content: center;
+	width: 120px;
 }
