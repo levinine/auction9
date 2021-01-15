@@ -13,6 +13,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -24,8 +29,8 @@ import { HomeComponent } from './home/home.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
-
 
 @NgModule({
   declarations: [
@@ -36,6 +41,7 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     UserAuctionsComponent,
     WonAuctionsComponent,
     PageNotFoundComponent,
+    AddAuctionDialogComponent
     DataTableDetailsComponent
   ],
   imports: [
@@ -52,10 +58,21 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     MatPaginatorModule,
     MatTableModule,
     MatSortModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule,
     MatCardModule,
     MatTooltipModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ],
+  entryComponents: [
+    AddAuctionDialogComponent
+  ]
 })
 export class AppModule { }
