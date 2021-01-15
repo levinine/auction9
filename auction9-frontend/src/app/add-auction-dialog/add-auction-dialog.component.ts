@@ -24,8 +24,8 @@ export class AddAuctionDialogComponent implements OnInit {
       ]),
       price: new FormControl('', [
         Validators.required,
+        Validators.pattern("^[1-9]\\d*(,\\d+)?$"), //only numbers and comma regex
         Validators.maxLength(10),
-        Validators.pattern("^[1-9]\d*(,\d+)?$") //only numbers and comma regex
       ]),
       startDate: new FormControl('', [
         Validators.required
