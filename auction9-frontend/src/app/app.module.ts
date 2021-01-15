@@ -41,7 +41,7 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     UserAuctionsComponent,
     WonAuctionsComponent,
     PageNotFoundComponent,
-    AddAuctionDialogComponent
+    AddAuctionDialogComponent,
     DataTableDetailsComponent
   ],
   imports: [
