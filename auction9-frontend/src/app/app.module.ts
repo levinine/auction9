@@ -20,6 +20,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HttpClientModule } from '@angular/common/http';
 
 // Components
 import { AppComponent } from './app.component';
@@ -31,6 +32,9 @@ import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
+
+// Services
+import { AuctionFetchService } from './services/auction-fetch.service';
 
 @NgModule({
   declarations: [
@@ -66,8 +70,12 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     NgxMaterialTimepickerModule,
     MatCardModule,
     MatTooltipModule,
+    HttpClientModule,
   ],
-  providers: [],
+  // services here
+  providers: [
+    AuctionFetchService,
+  ],
   bootstrap: [
     AppComponent
   ],
