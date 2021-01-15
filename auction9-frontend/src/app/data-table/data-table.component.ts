@@ -39,10 +39,9 @@ export class DataTableComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.auctionFetchService.getActiveAuctions().then((data: []) => {
-      console.log(data);
       const auctions = Array.from(data);
       this.dataSource = new MatTableDataSource(auctions);
-      
+
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
