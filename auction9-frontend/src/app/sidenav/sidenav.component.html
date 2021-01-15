@@ -6,6 +6,9 @@
     <h1 class="app-name">Auction9</h1>
     <span class="spacer"></span>
     <button mat-raised-button>
+      <span class="material-icons">
+        person
+      </span>
       Login
     </button>
   </mat-toolbar>
@@ -39,6 +42,16 @@
         </mat-list-item>
 
       </mat-nav-list>
+      <button
+        color=primary
+        mat-raised-button
+        class="add-auction-button"
+        (click)="addAuction()">
+        <span class="material-icons">
+          add
+        </span>
+        Add new auction
+      </button>
     </mat-sidenav>
     <mat-sidenav-content>
       <router-outlet></router-outlet>
