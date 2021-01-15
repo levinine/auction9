@@ -22,7 +22,7 @@ export const getAuction = async (event, context) => {
     await mysql.end();
     return {
       statusCode: 200,
-      body: `${auctionResults[0]}`,
+      body: JSON.stringify(auctionResults[0]),
     };
   } catch (error) {
     console.log(error);
@@ -43,7 +43,7 @@ export const getActiveAuctions = async (event, context) => {
     await mysql.end();
     return {
       statusCode: 200,
-      body: `${resultsActiveAuctions}`,
+      body: JSON.stringify(resultsActiveAuctions),
     };
   } catch (error) {
     console.log(error);

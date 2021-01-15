@@ -25,7 +25,7 @@ const routes: Routes = [
     component: WonAuctionsComponent
   },
   {
-    path: 'auction/:id',
+    path: 'auctions/:id',
     component: DataTableDetailsComponent
   },
   {
