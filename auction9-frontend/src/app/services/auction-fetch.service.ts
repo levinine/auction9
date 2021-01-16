@@ -9,7 +9,7 @@ export class AuctionFetchService {
   constructor(private http: HttpClient) { }
 
   // endpoints
-  private readonly allActiveAuctionsEndpoint = 'http://127.0.0.1:3000/home/';
+  private readonly allActiveAuctionsEndpoint = 'http://127.0.0.1:3000/auctions/';
 
 
   // fetch all active auctions from endpoint
