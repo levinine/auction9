@@ -9,11 +9,11 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/auctions',
     pathMatch: 'full'
   },
   {
-    path: 'home',
+    path: 'auctions',
     component: HomeComponent
   },
   {
