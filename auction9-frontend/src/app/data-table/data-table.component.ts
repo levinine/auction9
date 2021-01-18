@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import {AfterViewInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import { AfterViewInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { AuctionService } from '../services/auction.service';
+import { ActivatedRoute } from '@angular/router';
 
-export interface BidData {
-  id: string;
-  name: string;
+// our data structure
+export interface AuctionData {
+  auctionID: number;
+  title: string;
+  description: number;
+  date_from: string;
+  date_to: string;
   price: number;
-  action: string;
+  status: string;
+  created_by: number;
+  winner: number;
 }
-
-/** Constants used to fill up our data base. */
-const NAMES: string[] = [
-  'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-  'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-];
 
 /**
  * @title Data table with sorting, pagination, and filtering.
@@ -28,23 +30,31 @@ const NAMES: string[] = [
 
 export class DataTableComponent implements AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'name', 'price', 'action'];
-  dataSource: MatTableDataSource<BidData>;
+  displayedColumns: string[] = ['auctionID', 'title', 'price', 'action'];
+  dataSource: MatTableDataSource<AuctionData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor() {
-    // Create 50 Bids
-    const bids = Array.from({length: 50}, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(bids);
-  }
+  constructor(private auctionService: AuctionService, private route: ActivatedRoute) { }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    // save current path. example '/auctions'
+    const currentPath = this.route.snapshot['_routerState'].url;
+    // on '/auctions' path, get only active auctions
+    if (currentPath === '/auctions') {
+      this.auctionService.getActiveAuctions().then((data: []) => {
+      const auctions = Array.from(data);
+      this.dataSource = new MatTableDataSource(auctions);
+      
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      });
+    } else if (currentPath === '/myAuctions') {
+      // get auctions for this user
+    } else if (currentPath === '/wonAuctions') {
+      // get won auctions by user
+    }
   }
 
   applyFilter(event: Event) {
@@ -55,17 +65,4 @@ export class DataTableComponent implements AfterViewInit {
       this.dataSource.paginator.firstPage();
     }
   }
-}
-
-/** Builds and returns a new Bids. */
-function createNewUser(id: number): BidData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-      NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    price: Math.round(Math.random() * 10000),
-    action: 'More Details'
-  };
 }

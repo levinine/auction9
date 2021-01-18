@@ -34,7 +34,7 @@ export const getAuction = async (event, context) => {
 };
 
 /* getActiveAuctions - will return all auctions with 'active' status
- * GET: /home
+ * GET: /auctions
  */
 export const getActiveAuctions = async (event, context) => {
   try {

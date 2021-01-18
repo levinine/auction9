@@ -42,5 +42,5 @@ functions:
     handler: handler.getActiveAuctions
     events:
       - http:
-          path: home
+          path: auctions
           method: get
