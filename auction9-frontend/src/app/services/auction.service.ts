@@ -18,6 +18,6 @@ export class AuctionService {
 
   // fetch data for selected auction
   getAuctionById(auctionId) {
-    return this.http.get(this.baseEndpoint + this.activeAuctionsPath + auctionId, {responseType: 'json'}).toPromise();
+    return this.http.get(`${environment.baseUrl}/auctions/${auctionId}`, { responseType: 'json' }).toPromise();
   }
 }
