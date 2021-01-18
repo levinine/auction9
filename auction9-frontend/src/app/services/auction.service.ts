@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class AuctionFetchService {
+export class AuctionService {
 
   constructor(private http: HttpClient) { }
 

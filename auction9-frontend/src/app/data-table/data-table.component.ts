@@ -3,7 +3,7 @@ import { AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { AuctionFetchService } from '../services/auction.service';
+import { AuctionService } from '../services/auction.service';
 
 // our data structure
 export interface AuctionData {
@@ -35,7 +35,7 @@ export class DataTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private auctionFetchService: AuctionFetchService) { }
+  constructor(private auctionFetchService: AuctionService) { }
 
   ngAfterViewInit() {
     this.auctionFetchService.getActiveAuctions().then((data: []) => {
