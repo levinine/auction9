@@ -51,5 +51,5 @@ functions:
     handler: handler.postAuction
     events:
       - http:
-          path: newauction
+          path: auctions
           method: post

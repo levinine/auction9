@@ -60,8 +60,8 @@ export const getActiveAuctions = async (event, context) => {
 export const postAuction = async (event, context) => {
 	try {
 		let reqBody = JSON.parse(event.body);
-		let sqlInsert = await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`, `winner`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-			[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.status, reqBody.created_by, reqBody.winner]);
+		let sqlInsert = await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+			[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.status, reqBody.created_by]);
 		return {
 			statusCode: 200,
 			body: "Auction created successfully.",
