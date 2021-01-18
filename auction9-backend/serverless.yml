@@ -37,6 +37,7 @@ functions:
       - http:
           path: auctions/{id}
           method: get
+          cors: true
           
   # return all 'active' auctions
   getActiveAuctions:
@@ -45,6 +46,7 @@ functions:
       - http:
           path: auctions
           method: get
+          cors: true
           
   # creates new auction
   postAuction:
@@ -53,3 +55,4 @@ functions:
       - http:
           path: auctions
           method: post
+          cors: true
