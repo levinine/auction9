@@ -25,6 +25,7 @@
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "material-icons": "^0.5.2",
+    "moment": "^2.29.1",
     "ngx-material-timepicker": "^5.5.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

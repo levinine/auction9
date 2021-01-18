@@ -41,8 +41,8 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     UserAuctionsComponent,
     WonAuctionsComponent,
     PageNotFoundComponent,
-    AddAuctionDialogComponent
-    DataTableDetailsComponent
+    AddAuctionDialogComponent,
+    DataTableDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +65,7 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
     MatNativeDateModule,
     NgxMaterialTimepickerModule,
     MatCardModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [
