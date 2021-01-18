@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +9,10 @@ export class AuctionService {
 
   constructor(private http: HttpClient) { }
 
-  // base endpoint
-  private readonly baseEndpoint = window.location.protocol + '//' + window.location.hostname + ':3000';
-
-  // path
-  private readonly activeAuctionsPath = '/auctions/';
-
-  // fetch all active auctions from endpoint
+  /* getActiveAuctions - returns all auctions with active state
+   * Method: GET
+   * Path: /auctions */
   getActiveAuctions() {
-    return this.http.get(this.baseEndpoint + this.activeAuctionsPath, {responseType: 'json'}).toPromise();
+    return this.http.get(`${environment.baseUrl}/auctions`, { responseType: 'json' }).toPromise();
   }
 }
