@@ -34,7 +34,7 @@ import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dial
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
 
 // Services
-import { AuctionFetchService } from './services/auction-fetch.service';
+import { AuctionFetchService } from './services/auction.service';
 
 @NgModule({
   declarations: [

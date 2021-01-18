@@ -3,7 +3,7 @@ import { AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { AuctionFetchService } from '../services/auction-fetch.service';
+import { AuctionFetchService } from '../services/auction.service';
 
 // our data structure
 export interface AuctionData {
