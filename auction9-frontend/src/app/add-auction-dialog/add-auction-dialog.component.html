@@ -73,7 +73,6 @@
     </mat-error>
   </mat-form-field>
 
-
   <!-- Start time -->
   <mat-form-field class="timepicker">
     <mat-label>Start time</mat-label>
@@ -115,6 +114,9 @@
       You have to pick end time
     </mat-error>
   </mat-form-field>
+  <mat-error *ngIf="addAuctionForm.hasError('startTimeLessThanEndTime')">
+    End time must be greater than start time
+  </mat-error>
 
   <button
     color=primary
@@ -138,6 +140,7 @@
       mat-dialog-close
       cdkFocusInitial
       color="primary"
+      (click)="onCreateAuctionClick()"
       [disabled]="addAuctionForm.invalid">
         Create
     </button>
