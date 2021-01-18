@@ -37,7 +37,7 @@ functions:
       - http:
           path: auctions/{id}
           method: get
-
+          
   # return all 'active' auctions
   getActiveAuctions:
     handler: handler.getActiveAuctions
@@ -45,7 +45,7 @@ functions:
       - http:
           path: home
           method: get
-
+          
   # creates new auction
   postAuction:
     handler: handler.postAuction
