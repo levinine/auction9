@@ -28,9 +28,10 @@ export interface AuctionData {
 
 export class DataTableComponent implements AfterViewInit {
   // data from parent
-  @Input() data : AuctionData[];
+  @Input() tableData: AuctionData[];
+  // table headers from parent
+  @Input() tableHeaders: string[];
 
-  displayedColumns: string[] = ['auctionID', 'title', 'price', 'action'];
   dataSource: MatTableDataSource<AuctionData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -39,9 +40,8 @@ export class DataTableComponent implements AfterViewInit {
   constructor(private auctionService: AuctionService, private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
-    const dataTable = Array.from(this.data);
-    this.dataSource = new MatTableDataSource(dataTable);
-    
+    this.dataSource = new MatTableDataSource(Array.from(this.tableData));
+
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.cdRef.detectChanges();
