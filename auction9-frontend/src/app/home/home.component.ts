@@ -8,13 +8,13 @@ import { AuctionService } from '../services/auction.service';
 })
 export class HomeComponent implements OnInit {
   // array of all active auctions to be sent to data-table component
-  auctionsArray: any[];
+  data: any[];
 
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
     this.auctionService.getActiveAuctions().then((data: []) => {
-     this.auctionsArray = Array.from(data);
+     this.data = Array.from(data);
    });
   }
 

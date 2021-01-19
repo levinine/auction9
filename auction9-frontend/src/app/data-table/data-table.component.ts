@@ -31,7 +31,7 @@ export interface AuctionData {
 
 export class DataTableComponent implements AfterViewInit {
   // data from parent
-  @Input() auctionsArray : AuctionData[];
+  @Input() data : AuctionData[];
 
   displayedColumns: string[] = ['auctionID', 'title', 'price', 'action'];
   dataSource: MatTableDataSource<AuctionData>;
@@ -42,8 +42,8 @@ export class DataTableComponent implements AfterViewInit {
   constructor(private auctionService: AuctionService, private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
-    const auctions = Array.from(this.auctionsArray);
-    this.dataSource = new MatTableDataSource(auctions);
+    const dataTable = Array.from(this.data);
+    this.dataSource = new MatTableDataSource(dataTable);
     
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
