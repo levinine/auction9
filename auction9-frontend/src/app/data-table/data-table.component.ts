@@ -1,11 +1,8 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuctionService } from '../services/auction.service';
-import { Input } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
 
 // our data structure
 export interface AuctionData {
