@@ -1,13 +1,13 @@
 // Require for mysql connection
 // Configuration is in serverless.yml file inside 'environment:'
 const mysql = require('serverless-mysql')({
-	config: {
-		host: process.env.MYSQL_ENDPOINT,
-		port: process.env.MYSQL_PORT,
-		database: process.env.MYSQL_DATABASE,
-		user: process.env.MYSQL_USER,
-		password: process.env.MYSQL_PASSWORD
-	}
+  config: {
+    host: process.env.MYSQL_ENDPOINT,
+    port: process.env.MYSQL_PORT,
+    database: process.env.MYSQL_DATABASE,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD
+  }
 });
 
 /* getAuction - will return selected auction from DB
@@ -28,7 +28,9 @@ export const getAuction = async (event, context) => {
     console.log(error);
     return {
       statusCode: 400,
-      body: "There was an error while getting 'auction'",
+      body: JSON.stringify({ 
+        message: "There was an error getting an auction." 
+      })
     };
   }
 };
@@ -49,7 +51,9 @@ export const getActiveAuctions = async (event, context) => {
     console.log(error);
     return {
       statusCode: 400,
-      body: "There was an error while getting 'auctions'",
+      body: JSON.stringify({ 
+        message: "There was an error getting an auction." 
+      })
     };
   }
 };
@@ -58,19 +62,35 @@ export const getActiveAuctions = async (event, context) => {
  * POST: /newauction
  */
 export const postAuction = async (event, context) => {
-	try {
-		let reqBody = JSON.parse(event.body);
-		let sqlInsert = await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-			[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.status, reqBody.created_by]);
-		return {
-			statusCode: 200,
-			body: "Auction created successfully.",
-		};
-	} catch (error) {
-		console.log(error);
-		return {
-			statusCode: 400,
-			body: "There was an error creating an auction",
-		};
-	}
+  try {
+    let reqBody = JSON.parse(event.body);
+    var startDate = new Date(reqBody.date_from).valueOf();
+    var endDate = new Date(reqBody.date_to).valueOf();
+    let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
+
+    if (startDate > endDate) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: "End date must be after start date."
+        })
+      }
+    }
+
+    let sqlInsert = mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ 
+        message: "Auction created successfully." 
+      })
+    };
+  } catch (error) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ 
+        message: "There was an error creating an auction" 
+      })
+    };
+  }
 };

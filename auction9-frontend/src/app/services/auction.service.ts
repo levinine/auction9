@@ -15,4 +15,11 @@ export class AuctionService {
   getActiveAuctions() {
     return this.http.get(`${environment.baseUrl}/auctions`, { responseType: 'json' }).toPromise();
   }
+
+  /* addAuction - creates new auction
+   * Method: POST
+   * Path: /auctions */
+  addAuction(auction) {
+    return this.http.post(`${environment.baseUrl}/auctions`, auction);
+  }
 }

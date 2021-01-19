@@ -1,7 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+$color-blue: #3f51b5;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .timepicker-overlay {
   z-index: 1000 !important;
@@ -9,4 +16,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .timepicker-backdrop-overlay {
   z-index: 1000 !important;
+}
+
+.light-snackbar {
+  background: $color-blue;
+  color: white;
 }

@@ -21,6 +21,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Components
 import { AppComponent } from './app.component';
@@ -71,14 +72,16 @@ import { AuctionService } from './services/auction.service';
     MatCardModule,
     MatTooltipModule,
     HttpClientModule,
+    MatSnackBarModule,
   ],
-  // services here
+  // services
   providers: [
     AuctionService,
   ],
   bootstrap: [
     AppComponent
   ],
+  // dialogs
   entryComponents: [
     AddAuctionDialogComponent
   ]
