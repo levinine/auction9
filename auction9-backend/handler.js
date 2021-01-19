@@ -12,12 +12,12 @@ const mysql = require('serverless-mysql')({
 
 const generateResponse = (statusCode, body) => {
   return {
-    statusCode: this.statusCode,
+    statusCode: statusCode,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: JSON.stringify(this.body)
+    body: JSON.stringify(body)
   }
 };
 
