@@ -32,7 +32,9 @@ export const getAuction = async (event, context) => {
     console.log(error);
     return {
       statusCode: 400,
-      body: "There was an error while getting 'auction'",
+      body: JSON.stringify({ 
+        message: "There was an error getting an auction." 
+      })
     };
   }
 };
@@ -57,7 +59,13 @@ export const getActiveAuctions = async (event, context) => {
     console.log(error);
     return {
       statusCode: 400,
-      body: "There was an error while getting 'auctions'",
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ 
+        message: "There was an error getting an auction." 
+      })
     };
   }
 };
@@ -68,6 +76,23 @@ export const getActiveAuctions = async (event, context) => {
 export const postAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
+    var startDate = new Date(reqBody.date_from).valueOf();
+    var endDate = new Date(reqBody.date_to).valueOf();
+    let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
+
+    if (startDate > endDate) {
+      return {
+        statusCode: 400,
+        headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+        },
+        body: JSON.stringify({
+          message: "End date must be after start date."
+        })
+      }
+    }
+
     await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.status, reqBody.created_by]);
     await mysql.end();
@@ -77,13 +102,20 @@ export const postAuction = async (event, context) => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true,
       },
-      body: "Auction created successfully.",
+      body: JSON.stringify({ 
+        message: "Auction created successfully." 
+      })
     };
   } catch (error) {
-    console.log(error);
     return {
       statusCode: 400,
-      body: "There was an error creating an auction",
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({ 
+        message: "There was an error creating an auction" 
+      })
     };
   }
 };
