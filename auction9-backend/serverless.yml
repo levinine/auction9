@@ -20,14 +20,14 @@ provider:
   # the following line. Also, make sure to not
   # commit your .env.
   #
-  environment:
+  #environment:
     # Currently for localhost mysql with default settings
     # Use AWS configs later
-    MYSQL_ENDPOINT: localhost
-    MYSQL_PORT: 3306 #8889 S/3306 D
-    MYSQL_DATABASE: auction9
-    MYSQL_USER: root
-    MYSQL_PASSWORD: 12345 #root S/12345 D
+    #MYSQL_ENDPOINT: localhost
+    #MYSQL_PORT: 3306 #8889 S/3306 D
+    #MYSQL_DATABASE: auction9
+    #MYSQL_USER: root
+    #MYSQL_PASSWORD: 12345 #root S/12345 D
 
 functions:
   # return 'auction' by id
