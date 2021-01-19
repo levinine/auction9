@@ -10,10 +10,14 @@ const mysql = require('serverless-mysql')({
   }
 });
 
-const header = () => {
+const generateResponse = (statusCode, body) => {
   return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': true,
+    statusCode: this.statusCode,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify(this.body)
   }
 };
 
@@ -27,20 +31,13 @@ export const getAuction = async (event, context) => {
     let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
     // Run clean up function
     await mysql.end();
-    return {
-      statusCode: 200,
-      headers: header,
-      body: JSON.stringify(auctionResults[0]),
-    };
-  } catch (error) {
+    return generateResponse(200, auctionResults[0]);
+  }
+  catch (error) {
     console.log(error);
-    return {
-      statusCode: 400,
-      headers: header,
-      body: JSON.stringify({
-        message: "There was an error getting an auction."
-      })
-    };
+    return generateResponse(400, {
+      message: "There was an error getting an auction."
+    });
   }
 };
 
@@ -52,20 +49,13 @@ export const getActiveAuctions = async (event, context) => {
     let auctionActiveStatus = 'active';
     let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [auctionActiveStatus]);
     await mysql.end();
-    return {
-      statusCode: 200,
-      headers: header,
-      body: JSON.stringify(resultsActiveAuctions),
-    };
-  } catch (error) {
+    return generateResponse(200, resultsActiveAuctions);
+  }
+  catch (error) {
     console.log(error);
-    return {
-      statusCode: 400,
-      headers: header,
-      body: JSON.stringify({
-        message: "There was an error getting an auction."
-      })
-    };
+    return generateResponse(400, {
+      message: "There was an error getting an auction."
+    });
   }
 };
 
@@ -80,31 +70,19 @@ export const postAuction = async (event, context) => {
     let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
 
     if (startDate > endDate) {
-      return {
-        statusCode: 400,
-        headers: header,
-        body: JSON.stringify({
-          message: "End date must be after start date."
-        })
-      }
+      return generateResponse(400, {
+        message: "End date must be after start date."
+      });
     }
-
-    let sqlInsert = mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
-    return {
-      statusCode: 200,
-      headers: header,
-      body: JSON.stringify({
-        message: "Auction created successfully."
-      })
-    };
-  } catch (error) {
-    return {
-      statusCode: 400,
-      headers: header,
-      body: JSON.stringify({
-        message: "There was an error creating an auction"
-      })
-    };
+    return generateResponse(200, {
+      message: "Auction created successfully."
+    });
+  }
+  catch (error) {
+    return generateResponse(400, {
+      message: "There was an error creating an auction."
+    });
   }
 };
