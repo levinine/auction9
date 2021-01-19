@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-won-auctions',
-  templateUrl: './won-auctions.component.html',
+  template: '<app-data-table></app-data-table>',
   styleUrls: ['./won-auctions.component.scss']
 })
 export class WonAuctionsComponent implements OnInit {
