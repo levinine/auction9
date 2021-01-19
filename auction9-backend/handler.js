@@ -10,6 +10,13 @@ const mysql = require('serverless-mysql')({
   }
 });
 
+const header = () => {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true,
+  }
+};
+
 /* getAuction - will return selected auction from DB
  * GET: /auctions/id - we get auction by ID
  */
@@ -22,18 +29,16 @@ export const getAuction = async (event, context) => {
     await mysql.end();
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
+      headers: header,
       body: JSON.stringify(auctionResults[0]),
     };
   } catch (error) {
     console.log(error);
     return {
       statusCode: 400,
-      body: JSON.stringify({ 
-        message: "There was an error getting an auction." 
+      headers: header,
+      body: JSON.stringify({
+        message: "There was an error getting an auction."
       })
     };
   }
@@ -49,22 +54,16 @@ export const getActiveAuctions = async (event, context) => {
     await mysql.end();
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
+      headers: header,
       body: JSON.stringify(resultsActiveAuctions),
     };
   } catch (error) {
     console.log(error);
     return {
       statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ 
-        message: "There was an error getting an auction." 
+      headers: header,
+      body: JSON.stringify({
+        message: "There was an error getting an auction."
       })
     };
   }
@@ -83,10 +82,7 @@ export const postAuction = async (event, context) => {
     if (startDate > endDate) {
       return {
         statusCode: 400,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
+        headers: header,
         body: JSON.stringify({
           message: "End date must be after start date."
         })
@@ -97,23 +93,17 @@ export const postAuction = async (event, context) => {
       [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ 
-        message: "Auction created successfully." 
+      headers: header,
+      body: JSON.stringify({
+        message: "Auction created successfully."
       })
     };
   } catch (error) {
     return {
       statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ 
-        message: "There was an error creating an auction" 
+      headers: header,
+      body: JSON.stringify({
+        message: "There was an error creating an auction"
       })
     };
   }
