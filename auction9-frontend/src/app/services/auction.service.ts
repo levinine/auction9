@@ -21,7 +21,7 @@ export class AuctionService {
    * Path: /auctions/${auctionId} */
   getAuctionById(auctionId) {
     return this.http.get(`${environment.baseUrl}/auctions/${auctionId}`, { responseType: 'json' }).toPromise();
-
+  }
     
    /* addAuction - creates new auction
    * Method: POST
