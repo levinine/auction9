@@ -22,11 +22,18 @@ export class AuctionService {
   getAuctionById(auctionId) {
     return this.http.get(`${environment.baseUrl}/auctions/${auctionId}`, { responseType: 'json' }).toPromise();
   }
-    
+
    /* addAuction - creates new auction
    * Method: POST
    * Path: /auctions */
   addAuction(auction) {
     return this.http.post(`${environment.baseUrl}/auctions`, auction);
+  }
+
+  /* getAuctionBids - returns auction bids (users' bids history)
+   * Method: GET
+   * Path: /auctionBids/${auctionID} */
+  getAuctionBids(auctionID) {
+    return this.http.get(`${environment.baseUrl}/auctionBids/${auctionID}`, { responseType: 'json' }).toPromise();
   }
 }

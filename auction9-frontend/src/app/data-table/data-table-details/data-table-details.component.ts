@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuctionService } from '../../services/auction.service';
+import { MatDialog } from '@angular/material/dialog';
+import { HistoryDialogComponent } from 'src/app/history-dialog/history-dialog.component';
 
 @Component({
   selector: 'app-data-table-details',
@@ -8,10 +10,9 @@ import { AuctionService } from '../../services/auction.service';
   styleUrls: ['./data-table-details.component.scss']
 })
 export class DataTableDetailsComponent implements OnInit {
-
-  constructor(private router: ActivatedRoute, private auctionService: AuctionService) { }
-
   auction: any;
+
+  constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     // get auction id from url
@@ -21,4 +22,11 @@ export class DataTableDetailsComponent implements OnInit {
       this.auction = data;
     });
   }
+
+  showHistory() {
+    const dialogRef = this.dialog.open(HistoryDialogComponent, {
+      width: '600px'
+    });
+  }
+
 }

@@ -56,3 +56,12 @@ functions:
           path: auctions
           method: post
           cors: true
+
+  # returns auction bids (users' bids history)
+  getAuctionBids:
+    handler: handler.getAuctionBids
+    events:
+      - http:
+          path: auctionBids/{auctionID}
+          method: get
+          cors: true

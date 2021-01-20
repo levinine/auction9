@@ -7,8 +7,10 @@
   <img mat-card-image src="https://c1.wallpaperflare.com/preview/592/997/230/wood-desktop-wooden-aerial.jpg" alt="Photo of table" class="product-image">
   <mat-card-content>
   	<h2>The highest current bid: {{auction?.price}} din</h2>
-  	<h3>Remaining time: 1d 14h <i>({{auction?.date_to}})</i></h3>
-  	<h4>Status: 
+  	<h3>Remaining time: 1d 14h
+      <i>({{auction?.date_to | date: 'YYYY-MM-dd HH:MM:SS' }})</i>
+    </h3>
+  	<h4>Status:
   		<ng-template [ngIf]="auction?.status === 'inactive'">
         <span class="badge badge-secondary">Inactive</span>
       </ng-template>
@@ -23,13 +25,17 @@
       </ng-template>
   	</h4>
 	<div class="bid-number-container">
-		<h4>Number of bids: 
-			<button mat-mini-fab color="primary" matTooltip="Go to history of all bids"
-        			aria-label="Button that will redirect user to the history of all bids for this product">
+		<h4>Number of bids:
+      <button
+        mat-mini-fab
+        (click)="showHistory()"
+        color="primary"
+        matTooltip="Go to history of all bids"
+        aria-label="Button that will redirect user to the history of all bids for this product">
 		      +11
-		    </button>
+      </button>
 		</h4>
-	    
+
   	</div>
     <p>
       {{auction?.description}}
@@ -37,7 +43,12 @@
   </mat-card-content>
   <mat-card-actions>
   	<mat-form-field class="input-bid">
-	    <input matInput placeholder="Offer must start from: {{auction?.price + 1}} din" value="{{auction?.price + 1}}" min="{{auction?.price + 1}}" required>
+      <input
+        matInput
+        placeholder="Offer must start from: {{auction?.price + 1}} din"
+        value="{{auction?.price + 1}}"
+        min="{{auction?.price + 1}}"
+        required>
   	</mat-form-field>
     <button mat-raised-button color="primary">Bid</button>
   </mat-card-actions>
