@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuctionService } from '../services/auction.service';
-import { ActivatedRoute } from '@angular/router';
 
 // our data structure
 export interface AuctionData {
@@ -29,32 +27,24 @@ export interface AuctionData {
 })
 
 export class DataTableComponent implements AfterViewInit {
+  // data from parent
+  @Input() tableData: AuctionData[];
+  // table headers from parent
+  @Input() tableHeaders: string[];
 
-  displayedColumns: string[] = ['auctionID', 'title', 'price', 'action'];
   dataSource: MatTableDataSource<AuctionData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private auctionService: AuctionService, private route: ActivatedRoute) { }
+  constructor(private auctionService: AuctionService, private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
-    // save current path. example '/auctions'
-    const currentPath = this.route.snapshot['_routerState'].url;
-    // on '/auctions' path, get only active auctions
-    if (currentPath === '/auctions') {
-      this.auctionService.getActiveAuctions().then((data: []) => {
-      const auctions = Array.from(data);
-      this.dataSource = new MatTableDataSource(auctions);
-      
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      });
-    } else if (currentPath === '/myAuctions') {
-      // get auctions for this user
-    } else if (currentPath === '/wonAuctions') {
-      // get won auctions by user
-    }
+    this.dataSource = new MatTableDataSource(Array.from(this.tableData));
+
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.cdRef.detectChanges();
   }
 
   applyFilter(event: Event) {

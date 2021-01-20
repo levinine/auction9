@@ -18,7 +18,7 @@ const generateResponse = (statusCode, body) => {
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify(body)
-  }
+  };
 };
 
 /* getAuction - will return selected auction from DB
