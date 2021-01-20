@@ -47,4 +47,12 @@ export class AuctionService {
         params: { created_by: '2' },
       }).toPromise();
   }
+
+  /* stopAuctionById - update status to inactive
+   * Method: PUT
+   * Path: /myauctions/id/stop 
+   */
+   stopAuctionById(auctionId) {
+     return this.http.put(`${environment.baseUrl}/myauctions/${auctionId}/stop`, null).toPromise();
+   }
 }

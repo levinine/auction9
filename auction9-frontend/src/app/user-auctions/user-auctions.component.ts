@@ -19,4 +19,16 @@ export class UserAuctionsComponent implements OnInit {
     });
   }
 
+  // call stop service and live update table if it's success
+  stopActiveAuction(auctionId) {
+    this.auctionService.stopAuctionById(auctionId).then((data) => {
+      // live refresh table
+      this.tableData.forEach((element) => {
+        if (element.auctionID === auctionId) {
+          element.status = 'INACTIVE';
+        }
+      });
+    });
+  }
+
 }
