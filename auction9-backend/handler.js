@@ -88,7 +88,7 @@ export const postAuction = async (event, context) => {
 };
 
 /* getAuctionBids - returns auction bids (users' bids history)
- * GET: /auctionBids/${id}
+ * GET: auctions/{id}/bids
  */
 export const getAuctionBids = async (event, context) => {
   try {

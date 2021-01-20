@@ -62,6 +62,6 @@ functions:
     handler: handler.getAuctionBids
     events:
       - http:
-          path: auctionBids/{auctionID}
+          path: auctions/{id}/bids
           method: get
           cors: true

@@ -32,8 +32,8 @@ export class AuctionService {
 
   /* getAuctionBids - returns auction bids (users' bids history)
    * Method: GET
-   * Path: /auctionBids/${auctionID} */
+   * Path: auctions/{id}/bids */
   getAuctionBids(auctionID) {
-    return this.http.get(`${environment.baseUrl}/auctionBids/${auctionID}`, { responseType: 'json' }).toPromise();
+    return this.http.get(`${environment.baseUrl}/${auctionID}/bids`, { responseType: 'json' }).toPromise();
   }
 }
