@@ -88,7 +88,7 @@ export const postAuction = async (event, context) => {
 };
 
 /* getMyAuctions - will return all auctions for current user
- * get: /myauctions
+ * GET: /myauctions
  */
 export const getMyAuctions = async (event, context) => {
   try {
@@ -100,6 +100,26 @@ export const getMyAuctions = async (event, context) => {
     console.log(error);
     return generateResponse(400, {
       message: 'There was an error getting my auctions.'
+    });
+  }
+};
+
+/* stopActiveAuction - will update status for auction to 'inactive'
+ * PUT: /myauctions/id/stop
+ */
+export const stopActiveAuction = async (event, context) => {
+  try {
+    let auctionId = event.pathParameters.id;
+    let statusInactive = 'INACTIVE';
+    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statusInactive, auctionId]);
+    await mysql.end();
+    return generateResponse(200, {
+      message: 'Auction has been stopped successfully.'
+    });
+  } catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: 'There was an error while stoping auction.'
     });
   }
 };
