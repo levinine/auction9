@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuctionService } from '../services/auction.service';
 
 @Component({
@@ -10,15 +11,16 @@ export class HistoryDialogComponent implements OnInit {
 
   tableData: any[];
   tableHeaders: string[];
+  auctionID: number;
 
-  constructor(private auctionService: AuctionService) { }
+  constructor(private auctionService: AuctionService,
+    @Inject(MAT_DIALOG_DATA) public dialogData: any) {
+      this.auctionID = this.dialogData.auctionID;
+     }
 
   ngOnInit(): void {
-    // TODO: once bidding is enabled, pass the 'auctionID' instead of hardcoded '1'
-    this.auctionService.getAuctionBids(1).then((data: []) => {
+    this.auctionService.getAuctionBids(this.auctionID).then((data: []) => {
       this.tableData = Array.from(data);
-      console.log(this.tableData);
-
       this.tableHeaders = ['name', 'price', 'time'];
     });
   }

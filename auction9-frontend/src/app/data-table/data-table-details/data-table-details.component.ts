@@ -25,7 +25,10 @@ export class DataTableDetailsComponent implements OnInit {
 
   showHistory() {
     const dialogRef = this.dialog.open(HistoryDialogComponent, {
-      width: '600px'
+      width: '600px',
+      data: {
+        auctionID: this.auction.auctionID
+      }
     });
   }
 
