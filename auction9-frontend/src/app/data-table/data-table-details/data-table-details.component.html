@@ -9,16 +9,16 @@
   	<h2>The highest current bid: {{auction?.price}} din</h2>
   	<h3>Remaining time: 1d 14h <i>({{auction?.date_to}})</i></h3>
   	<h4>Status: 
-  		<ng-template [ngIf]="auction?.status === 'inactive'">
+  		<ng-template [ngIf]="auction?.status === 'INACTIVE'">
         <span class="badge badge-secondary">Inactive</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'active'">
+      <ng-template [ngIf]="auction?.status === 'ACTIVE'">
         <span class="badge badge-primary">Active</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'completed'">
+      <ng-template [ngIf]="auction?.status === 'COMPLETED'">
         <span class="badge badge-success">Completed</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'sold'">
+      <ng-template [ngIf]="auction?.status === 'SOLD'">
         <span class="badge badge-sold">Sold</span>
       </ng-template>
   	</h4>
@@ -39,6 +39,6 @@
   	<mat-form-field class="input-bid">
 	    <input matInput placeholder="Offer must start from: {{auction?.price + 1}} din" value="{{auction?.price + 1}}" min="{{auction?.price + 1}}" required>
   	</mat-form-field>
-    <button mat-raised-button color="primary">Bid</button>
+    <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' ? null : 'disabled'">Bid</button>
   </mat-card-actions>
 </mat-card>
