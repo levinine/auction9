@@ -65,3 +65,12 @@ functions:
           path: auctionBids/{auctionID}
           method: get
           cors: true
+
+# return all my auctions
+  getMyAuctions:
+    handler: handler.getMyAuctions
+    events:
+      - http:
+          path: myauctions
+          method: get
+          cors: true
