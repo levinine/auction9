@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.auctionService.getActiveAuctions().then((data: []) => {
      this.tableData = Array.from(data);
-     this.tableHeaders = ['auctionID', 'title', 'price', 'action'];
+     this.tableHeaders = ['auctionID', 'title', 'price', 'info'];
    });
   }
 

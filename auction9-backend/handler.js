@@ -86,3 +86,20 @@ export const postAuction = async (event, context) => {
     });
   }
 };
+
+/* getMyAuctions - will return all auctions for current user
+ * get: /myauctions
+ */
+export const getMyAuctions = async (event, context) => {
+  try {
+    let currentUserId = event.multiValueQueryStringParameters.created_by[0];
+    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
+    await mysql.end();
+    return generateResponse(200, resultsMyAuctions);
+  } catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: 'There was an error getting my auctions.'
+    });
+  }
+};

@@ -56,3 +56,12 @@ functions:
           path: auctions
           method: post
           cors: true
+
+  # return all my auctions
+  getMyAuctions:
+    handler: handler.getMyAuctions
+    events:
+      - http:
+          path: myauctions
+          method: get
+          cors: true
