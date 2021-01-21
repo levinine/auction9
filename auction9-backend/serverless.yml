@@ -74,3 +74,12 @@ functions:
           path: myauctions/{id}/stop
           method: put
           cors: true
+
+  # return all my won auctions
+  getMyWonAuctions:
+    handler: handler.getMyWonAuctions
+    events:
+      - http:
+          path: wonauctions
+          method: get
+          cors: true

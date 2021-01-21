@@ -14,7 +14,7 @@ export class UserAuctionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.auctionService.getMyAuctions().then((data: []) => {
-      this.tableData = data;
+      this.tableData = Array.from(data);
       this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop'];
     });
   }

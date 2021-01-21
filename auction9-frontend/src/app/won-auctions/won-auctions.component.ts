@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { AuctionService } from '../services/auction.service';
 
 @Component({
   selector: 'app-won-auctions',
-  template: '<app-data-table></app-data-table>',
+  templateUrl: './won-auctions.component.html',
   styleUrls: ['./won-auctions.component.scss']
 })
 export class WonAuctionsComponent implements OnInit {
+  tableData: any[];
+  tableHeaders: string[];
 
-  constructor() { }
+  constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
+    this.auctionService.getMyWonAuctions().then((data: []) => {
+      this.tableData = Array.from(data);
+      this.tableHeaders = ['auctionID', 'title', 'price', 'info'];
+    });
   }
 
 }
