@@ -15,11 +15,11 @@
       <ng-template [ngIf]="auction?.status === 'ACTIVE'">
         <span class="badge badge-primary">Active</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'COMPLETED'">
+      <ng-template [ngIf]="auction?.status === 'FINISHED'">
         <span class="badge badge-success">Completed</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'SOLD'">
-        <span class="badge badge-sold">Sold</span>
+      <ng-template [ngIf]="auction?.status === 'REALIZED'">
+        <span class="badge badge-sold">Realized</span>
       </ng-template>
   	</h4>
 	<div class="bid-number-container">
