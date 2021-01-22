@@ -40,7 +40,6 @@
     </p>
   </mat-card-content>
   <mat-card-actions>
-    <mat-form-field class="input-bid">
   	<mat-form-field class="input-bid">
       <input
         matInput
@@ -50,3 +49,5 @@
         required>
   	</mat-form-field>
     <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' ? null : 'disabled'">Bid</button>
+  </mat-card-actions>
+</mat-card>
