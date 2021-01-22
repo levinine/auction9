@@ -15,20 +15,40 @@ export class UserAuctionsComponent implements OnInit {
   ngOnInit(): void {
     this.auctionService.getMyAuctions().then((data: []) => {
       this.tableData = Array.from(data);
-      this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop'];
+      this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop', 'confirm'];
     });
   }
 
   // call stop service and live update table if it's success
   stopActiveAuction(auctionId) {
-    this.auctionService.stopAuctionById(auctionId).then((data) => {
-      // live refresh table
-      this.tableData.forEach((element) => {
-        if (element.auctionID === auctionId) {
-          element.status = 'INACTIVE';
-        }
+    if (confirm('Are you sure you want to STOP this auction?')) {
+      this.auctionService.stopAuctionById(auctionId).then((data) => {
+        // live refresh table
+        this.tableData.forEach((element) => {
+          if (element.auctionID === auctionId) {
+            if (element.status === 'ACTIVE') {
+              element.status = 'INACTIVE';
+            }
+          }
+        });
       });
-    });
+    }
   }
 
+  // creator of auction will confirm that he sold item to the winner
+  realizeAuction(auction, status) {
+    if (confirm('Are you sure you want to REALIZE this auction?')) {
+      this.auctionService.realizeAuctionById(auction, status).then((data) => {
+        this.tableData.forEach((element) => {
+          if (element.auctionID === auction.auctionID) {
+            if (element.status === 'FINISHED') {
+              element.status = 'REALIZED';
+            } else {
+              alert('You can only confirm auction if it is finished');
+            }
+          }
+        });
+      });
+    }
+  }
 }

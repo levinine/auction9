@@ -33,6 +33,8 @@ export class DataTableComponent implements AfterViewInit {
   @Input() tableHeaders: string[];
   // stop method from user-auctions
   @Input() stopActiveAuction: Function;
+  // confirm method from user-auctions
+  @Input() realizeAuction: Function;
 
   dataSource: MatTableDataSource<AuctionData>;
 
@@ -60,5 +62,9 @@ export class DataTableComponent implements AfterViewInit {
 
   stopActiveAuctionID(id) {
     this.stopActiveAuction(id);
+  }
+
+  realizeFinishedAuctionID(auction, status) {
+    this.realizeAuction(auction, status);
   }
 }
