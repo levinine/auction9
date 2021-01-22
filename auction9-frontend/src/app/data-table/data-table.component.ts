@@ -69,6 +69,7 @@ export class DataTableComponent implements AfterViewInit {
         auctionData: this.dataSource.filteredData //auction
       }
     });
+  }
 
   stopActiveAuctionID(id) {
     this.stopActiveAuction(id);

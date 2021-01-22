@@ -74,8 +74,7 @@ export const postAuction = async (event, context) => {
         message: "End date must be after start date."
       });
     }
-    await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
+    await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
     await mysql.end();
     return generateResponse(200, {
       message: "Auction created successfully."
@@ -134,8 +133,7 @@ export const getUserAuctions = async (event, context) => {
 export const updateAuction = async (event, context) => {
   let reqBody = JSON.parse(event.body);
   try {
-    await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=? WHERE auctionID=?', 
-      [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
+    await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=? WHERE auctionID=?', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
     await mysql.end();
     return generateResponse(200, {
       message: 'Auction updated successfully.'
@@ -145,9 +143,9 @@ export const updateAuction = async (event, context) => {
     return generateResponse(400, {
       message: 'There was an error updating an auctions.'
     });
-  };
+  }
+};
 
-      
  /* stopActiveAuction - will update status for auction to 'inactive'
  * PUT: /myauctions/id/stop
  */
@@ -168,7 +166,7 @@ export const stopActiveAuction = async (event, context) => {
   }
 };
 
-  
+
 /* getUserWonAuctions - will return all my won auctions for current user
  * GET: /wonauctions
  */
