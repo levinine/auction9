@@ -74,3 +74,21 @@ functions:
           path: myauctions
           method: get
           cors: true
+
+  # update status to 'inactive'
+  stopActiveAuction:
+    handler: handler.stopActiveAuction
+    events:
+      - http:
+          path: myauctions/{id}/stop
+          method: put
+          cors: true
+
+  # return all my won auctions
+  getUserWonAuctions:
+    handler: handler.getUserWonAuctions
+    events:
+      - http:
+          path: wonauctions
+          method: get
+          cors: true

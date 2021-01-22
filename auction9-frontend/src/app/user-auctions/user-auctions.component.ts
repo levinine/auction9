@@ -14,8 +14,20 @@ export class UserAuctionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.auctionService.getMyAuctions().then((data: []) => {
-      this.tableData = data;
+      this.tableData = Array.from(data);
       this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop'];
+    });
+  }
+
+  // call stop service and live update table if it's success
+  stopActiveAuction(auctionId) {
+    this.auctionService.stopAuctionById(auctionId).then((data) => {
+      // live refresh table
+      this.tableData.forEach((element) => {
+        if (element.auctionID === auctionId) {
+          element.status = 'INACTIVE';
+        }
+      });
     });
   }
 

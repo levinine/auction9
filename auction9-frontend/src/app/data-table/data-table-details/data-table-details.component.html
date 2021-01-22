@@ -7,21 +7,19 @@
   <img mat-card-image src="https://c1.wallpaperflare.com/preview/592/997/230/wood-desktop-wooden-aerial.jpg" alt="Photo of table" class="product-image">
   <mat-card-content>
   	<h2>The highest current bid: {{auction?.price}} din</h2>
-  	<h3>Remaining time: 1d 14h
-      <i>({{auction?.date_to | date: 'YYYY-MM-dd HH:MM:SS' }})</i>
-    </h3>
-  	<h4>Status:
-  		<ng-template [ngIf]="auction?.status === 'inactive'">
+  	<h3>Remaining time: 1d 14h <i>({{auction?.date_to}})</i></h3>
+  	<h4>Status: 
+  		<ng-template [ngIf]="auction?.status === 'INACTIVE'">
         <span class="badge badge-secondary">Inactive</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'active'">
+      <ng-template [ngIf]="auction?.status === 'ACTIVE'">
         <span class="badge badge-primary">Active</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'completed'">
-        <span class="badge badge-success">Completed</span>
+      <ng-template [ngIf]="auction?.status === 'FINISHED'">
+        <span class="badge badge-success">Finished</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'sold'">
-        <span class="badge badge-sold">Sold</span>
+      <ng-template [ngIf]="auction?.status === 'REALIZED'">
+        <span class="badge badge-sold">Realized</span>
       </ng-template>
   	</h4>
 	<div class="bid-number-container">
@@ -50,6 +48,6 @@
         min="{{auction?.price + 1}}"
         required>
   	</mat-form-field>
-    <button mat-raised-button color="primary">Bid</button>
+    <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' ? null : 'disabled'">Bid</button>
   </mat-card-actions>
 </mat-card>
