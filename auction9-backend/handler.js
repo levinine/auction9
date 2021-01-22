@@ -165,15 +165,15 @@ export const getUserWonAuctions = async (event, context) => {
 /* Allowed status changes:
  * order status: INACTIVE -> ACTIVE -> FINISHED -> REALIZED
  * current -> new :
- * INACTIVE -> ACTIVE
- * ACTIVE -> INACTIVE
- * ACTIVE -> FINISHED
- * FINISHED -> REALIZED
+ * INACTIVE -> ACTIVE   [x]
+ * ACTIVE -> INACTIVE   [x]
+ * ACTIVE -> FINISHED   [x]
+ * FINISHED -> REALIZED [x]
  */
 /* realizeFinishedAuction - will update status for auction to 'realized'
  * PUT: /myauctions/id
  */
- export const realizeFinishedAuction = async (event, context) => {
+export const realizeFinishedAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
     let auctionId = reqBody.auction.auctionID;
@@ -182,36 +182,42 @@ export const getUserWonAuctions = async (event, context) => {
     let reqStatus = reqBody.changeStatus;
     let possibleStatus = ['INACTIVE', 'ACTIVE', 'FINISHED', 'REALIZED'];
     // check allowed status order
-    if (reqStatus === possibleStatus[3]) {
+    if (reqStatus === possibleStatus[3]) { // FINISHED -> REALIZED
       if (currentStatus === possibleStatus[2]) {
         await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
           [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
         await mysql.end();
         return generateResponse(200, {
-          message: 'Successfully realized.'
+          message: 'Auction successfully realized.'
         });
       }
-    }
-    /*let auctionId = reqBody.auctionID;
-    let reqStatus = reqBody.status;
-    let statusRealized = 'REALIZED';
-    // Check if current status is 'finished'
-    // if so, user can 'realize' it, else error
-    if (currentStatus === 'FINISHED') {
-      await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statusRealized, auctionId]);
-      await mysql.end();
-      return generateResponse(200, {
-        message: 'Success realized'
-      });
+    } else if (reqStatus === possibleStatus[1]) { // INACTIVE -> ACTIVE
+      if (currentStatus === possibleStatus[0]) {
+        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
+          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
+        await mysql.end();
+        return generateResponse(200, {
+          message: 'Auction successfully activated.'
+        });
+      }
+    } else if (reqStatus === possibleStatus[0] || reqStatus === possibleStatus[2]) { // ACTIVE -> INACTIVE or ACTIVE -> FINISHED
+      if (currentStatus === possibleStatus[1]) {
+        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
+          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
+        await mysql.end();
+        return generateResponse(200, {
+          message: 'Auction successfully stopped/finished.'
+        });
+      }
     } else {
       return generateResponse(400, {
-        message: 'Current status can not be changed.'
+        message: 'Auction status could not be changed.'
       });
-    }*/
+    }
   } catch (error) {
     console.log(error);
     return generateResponse(400, {
-      message: 'There was an error while realizing finished auction.'
+      message: 'There was an error while updating auction status.'
     });
   }
 };
