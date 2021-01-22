@@ -76,8 +76,8 @@ functions:
           cors: true
 
   # return all my won auctions
-  getMyWonAuctions:
-    handler: handler.getMyWonAuctions
+  getUserWonAuctions:
+    handler: handler.getUserWonAuctions
     events:
       - http:
           path: wonauctions

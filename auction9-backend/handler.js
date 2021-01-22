@@ -125,15 +125,15 @@ export const stopActiveAuction = async (event, context) => {
   }
 };
 
-/* getMyWonAuctions - will return all my won auctions for current user
+/* getUserWonAuctions - will return all my won auctions for current user
  * GET: /wonauctions
  */
-export const getMyWonAuctions = async (event, context) => {
+export const getUserWonAuctions = async (event, context) => {
    try {
      let currentUserId = event.multiValueQueryStringParameters.userId[0];
-     let resultsMyWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUserId]);
+     let resultsUserWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUserId]);
      await mysql.end();
-     return generateResponse(200, resultsMyWonAuctions);
+     return generateResponse(200, resultsUserWonAuctions);
    } catch (error) {
      console.log(error);
      return generateResponse(400, {
