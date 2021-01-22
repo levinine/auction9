@@ -55,4 +55,19 @@ export class AuctionService {
    stopAuctionById(auctionId) {
      return this.http.put(`${environment.baseUrl}/myauctions/${auctionId}/stop`, null).toPromise();
    }
+
+   /* getMyWonAuctions - return all my won auctions for current user
+   * Method: GET
+   * Path: /wonauctions 
+   */
+   // currently userId hard coded for testing purpose
+   // after SSO is implemented, this will be updated
+   getMyWonAuctions() {
+     return this.http.get(`${environment.baseUrl}/wonauctions`, 
+     {
+       responseType: 'json',
+       // same as getMyAuctions hard coded user ID
+       params: { userId: '2' },
+     }).toPromise();
+   }
 }
