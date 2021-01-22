@@ -57,11 +57,20 @@ functions:
           method: post
           cors: true
 
-  # return all my auctions
-  getMyAuctions:
-    handler: handler.getMyAuctions
+  # return all user auctions
+  getUserAuctions:
+    handler: handler.getUserAuctions
     events:
       - http:
-          path: myauctions
+          path: userAuctions
           method: get
+          cors: true
+
+  # updates auction
+  updateAuction:
+    handler: handler.updateAuction
+    events:
+      - http:
+          path: updateAuction
+          method: put
           cors: true

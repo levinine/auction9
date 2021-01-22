@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>
-  Add new auction
-</h1>
+<h1 mat-dialog-title *ngIf="!dialogData.update"> Add new auction </h1>
+<h1 mat-dialog-title *ngIf="dialogData.update"> Update auction </h1>
+
 <form
-  [formGroup]="addAuctionForm"
+  [formGroup]="addOrUpdateAuctionForm"
   class="add-auction-form"
   novalidate>
 
@@ -14,7 +14,7 @@
       required
       formControlName="title"
       placeholder="Title">
-      <mat-error *ngIf="addAuctionForm.controls.title.hasError('required')">
+      <mat-error *ngIf="addOrUpdateAuctionForm.controls.title.hasError('required')">
         You must enter a title.
       </mat-error>
   </mat-form-field>
@@ -28,7 +28,7 @@
       formControlName="description"
       placeholder="Description">
     </textarea>
-      <mat-error *ngIf="addAuctionForm.controls.description.hasError('required')">
+      <mat-error *ngIf="addOrUpdateAuctionForm.controls.description.hasError('required')">
         You must enter a description.
       </mat-error>
   </mat-form-field>
@@ -41,15 +41,18 @@
       required
       formControlName="price"
       placeholder="Price">
-      <mat-error *ngIf="addAuctionForm.controls.price.hasError('required')">
+      <mat-error *ngIf="addOrUpdateAuctionForm.controls.price.hasError('required')">
         You must enter a price.
       </mat-error>
   </mat-form-field>
 
   <!-- Date picker -->
+  <div formGroupName="dateGroup">
+
   <mat-form-field appearance="fill" class="datepicker">
     <mat-label>Start and end date</mat-label>
-    <mat-date-range-input [rangePicker]="picker">
+    <mat-date-range-input
+      [rangePicker]="picker">
       <input
         matStartDate
         formControlName="startDate"
@@ -62,16 +65,17 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
 
-    <mat-error *ngIf="addAuctionForm.controls.startDate.hasError('matStartDateInvalid')">
+    <mat-error *ngIf="addOrUpdateAuctionForm.get('dateGroup.startDate').hasError('matStartDateInvalid')">
       Invalid start date
     </mat-error>
-    <mat-error *ngIf="addAuctionForm.controls.endDate.hasError('matEndDateInvalid')">
+    <mat-error *ngIf="addOrUpdateAuctionForm.get('dateGroup.startDate').hasError('matEndDateInvalid')">
       Invalid end date
     </mat-error>
-    <mat-error *ngIf="addAuctionForm.controls.startDate.hasError('required')">
+    <mat-error *ngIf="addOrUpdateAuctionForm.get('dateGroup.startDate').hasError('required')">
       You have to pick start and end date
     </mat-error>
   </mat-form-field>
+  </div>
 
   <!-- Start time -->
   <mat-form-field class="timepicker">
@@ -89,7 +93,7 @@
     </mat-icon>
     <ngx-material-timepicker #starttimepicker>
     </ngx-material-timepicker>
-    <mat-error *ngIf="addAuctionForm.controls.startTime.hasError('required')">
+    <mat-error *ngIf="addOrUpdateAuctionForm.controls.startTime.hasError('required')">
       You have to pick start time
     </mat-error>
   </mat-form-field>
@@ -110,11 +114,14 @@
     </mat-icon>
     <ngx-material-timepicker #endtimepicker>
     </ngx-material-timepicker>
-    <mat-error *ngIf="addAuctionForm.controls.endTime.hasError('required')">
+    <mat-error *ngIf="addOrUpdateAuctionForm.controls.endTime.hasError('required')">
       You have to pick end time
     </mat-error>
   </mat-form-field>
-  <mat-error *ngIf="addAuctionForm.hasError('startTimeLessThanEndTime')">
+  <mat-error *ngIf="addOrUpdateAuctionForm.hasError('startTimeLessThanEndTime')">
+    End time must be greater than start time
+  </mat-error>
+  <mat-error *ngIf="addOrUpdateAuctionForm.hasError('minTimeGreaterThanNow')">
     End time must be greater than start time
   </mat-error>
 
@@ -128,7 +135,7 @@
     Upload photos
   </button>
 
-  <!-- Add article button -->
+  <!-- Add/update article button -->
   <div mat-dialog-actions align="center">
     <button
       mat-raised-button
@@ -141,8 +148,19 @@
       cdkFocusInitial
       color="primary"
       (click)="onCreateAuctionClick()"
-      [disabled]="addAuctionForm.invalid">
+      [disabled]="addOrUpdateAuctionForm.invalid"
+      *ngIf="!dialogData.update">
         Create
+    </button>
+    <button
+      mat-raised-button
+      mat-dialog-close
+      cdkFocusInitial
+      color="primary"
+      (click)="onUpdateAuctionClick()"
+      [disabled]="addOrUpdateAuctionForm.invalid"
+      *ngIf="dialogData.update">
+        Update
     </button>
   </div>
 </form>

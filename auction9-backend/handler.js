@@ -87,13 +87,14 @@ export const postAuction = async (event, context) => {
   }
 };
 
-/* getMyAuctions - will return all auctions for current user
- * get: /myauctions
+/* getUserAuctions - will return all auctions for current user
+ * get: /userAuctions
  */
-export const getMyAuctions = async (event, context) => {
+export const getUserAuctions = async (event, context) => {
   try {
-    let currentUserId = event.multiValueQueryStringParameters.created_by[0];
-    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
+    // let currentUserId = event.multiValueQueryStringParameters.created_by[0];
+    // let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
+    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=2');
     await mysql.end();
     return generateResponse(200, resultsMyAuctions);
   } catch (error) {
@@ -103,3 +104,24 @@ export const getMyAuctions = async (event, context) => {
     });
   }
 };
+
+/* updateAuction - updates an auction
+ * put: /updateAuction
+ */
+export const updateAuction = async (event, context) => {
+  let reqBody = JSON.parse(event.body);
+  try {
+    await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=? WHERE auctionID=?', 
+      [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
+    await mysql.end();
+    return generateResponse(200, {
+      message: 'Auction updated successfully.'
+    });
+  } catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: 'There was an error updating an auctions.'
+    });
+  }
+};
+

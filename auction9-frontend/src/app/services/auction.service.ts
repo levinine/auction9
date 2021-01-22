@@ -11,7 +11,7 @@ export class AuctionService {
 
   /* getActiveAuctions - returns all auctions with active state
    * Method: GET
-   * Path: /auctions 
+   * Path: /auctions
    */
   getActiveAuctions() {
     return this.http.get(`${environment.baseUrl}/auctions`, { responseType: 'json' }).toPromise();
@@ -19,15 +19,15 @@ export class AuctionService {
 
   /* getAuctionById - returns auction with specific ID
    * Method: GET
-   * Path: /auctions/${auctionId} 
+   * Path: /auctions/${auctionId}
    */
   getAuctionById(auctionId) {
     return this.http.get(`${environment.baseUrl}/auctions/${auctionId}`, { responseType: 'json' }).toPromise();
   }
-    
+
   /* addAuction - creates new auction
    * Method: POST
-   * Path: /auctions 
+   * Path: /auctions
    */
   addAuction(auction) {
     return this.http.post(`${environment.baseUrl}/auctions`, auction);
@@ -35,16 +35,24 @@ export class AuctionService {
 
   /* getMyAuctions - return all auctions for current user
    * Method: GET
-   * Path: /myauctions 
+   * Path: /userAuctions
    */
    // currently userId hard coded for testing purpose
    // after SSO is implemented, this will be updated
-  getMyAuctions() {
-    return this.http.get(`${environment.baseUrl}/myauctions`, 
-      { 
+   getUserAuctions() {
+    return this.http.get(`${environment.baseUrl}/userAuctions`,
+      {
         responseType: 'json',
         // currently hard coded user ID
         params: { created_by: '2' },
       }).toPromise();
+  }
+
+  /* updateArticle - updates an auction
+   * Method: PUT
+   * Path: /updateAuctions
+   */
+  updateAuction(auction) {
+    return this.http.put(`${environment.baseUrl}/updateAuction`, auction);
   }
 }

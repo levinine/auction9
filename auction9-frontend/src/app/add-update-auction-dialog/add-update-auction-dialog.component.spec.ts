@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddAuctionDialogComponent } from './add-auction-dialog.component';
+import { AddUpdateAuctionDialogComponent } from './add-update-auction-dialog.component';
 
 describe('AddAuctionDialogComponent', () => {
-  let component: AddAuctionDialogComponent;
-  let fixture: ComponentFixture<AddAuctionDialogComponent>;
+  let component: AddUpdateAuctionDialogComponent;
+  let fixture: ComponentFixture<AddUpdateAuctionDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddAuctionDialogComponent ]
+      declarations: [ AddUpdateAuctionDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddAuctionDialogComponent);
+    fixture = TestBed.createComponent(AddUpdateAuctionDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

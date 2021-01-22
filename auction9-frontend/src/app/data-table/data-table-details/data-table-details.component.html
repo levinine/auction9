@@ -4,12 +4,15 @@
     <mat-card-title>{{auction?.title}}</mat-card-title>
     <mat-card-subtitle>Auction Number: {{auction?.auctionID}}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image src="https://c1.wallpaperflare.com/preview/592/997/230/wood-desktop-wooden-aerial.jpg" alt="Photo of table" class="product-image">
+  <img mat-card-image src="https://c1.wallpaperflare.com/preview/592/997/230/wood-desktop-wooden-aerial.jpg"
+    alt="Photo of table" class="product-image">
   <mat-card-content>
-  	<h2>The highest current bid: {{auction?.price}} din</h2>
-  	<h3>Remaining time: 1d 14h <i>({{auction?.date_to}})</i></h3>
-  	<h4>Status: 
-  		<ng-template [ngIf]="auction?.status === 'inactive'">
+    <h2>The highest current bid: {{auction?.price}} din</h2>
+    <h3>Remaining time: 1d 14h
+      <i>({{auction?.date_to}})</i>
+    </h3>
+    <h4>Status:
+      <ng-template [ngIf]="auction?.status === 'inactive'">
         <span class="badge badge-secondary">Inactive</span>
       </ng-template>
       <ng-template [ngIf]="auction?.status === 'active'">
@@ -21,24 +24,28 @@
       <ng-template [ngIf]="auction?.status === 'sold'">
         <span class="badge badge-sold">Sold</span>
       </ng-template>
-  	</h4>
-	<div class="bid-number-container">
-		<h4>Number of bids: 
-			<button mat-mini-fab color="primary" matTooltip="Go to history of all bids"
-        			aria-label="Button that will redirect user to the history of all bids for this product">
-		      +11
-		    </button>
-		</h4>
-	    
-  	</div>
+    </h4>
+    <div class="bid-number-container">
+      <h4>Number of bids:
+        <button mat-mini-fab color="primary" matTooltip="Go to history of all bids"
+          aria-label="Button that will redirect user to the history of all bids for this product">
+          +11
+        </button>
+      </h4>
+    </div>
     <p>
       {{auction?.description}}
     </p>
   </mat-card-content>
   <mat-card-actions>
-  	<mat-form-field class="input-bid">
-	    <input matInput placeholder="Offer must start from: {{auction?.price + 1}} din" value="{{auction?.price + 1}}" min="{{auction?.price + 1}}" required>
-  	</mat-form-field>
+    <mat-form-field class="input-bid">
+      <input
+        matInput
+        placeholder="Offer must start from: {{auction?.price + 1}} din"
+        value="{{auction?.price + 1}}"
+        min="{{auction?.price + 1}}"
+        required>
+    </mat-form-field>
     <button mat-raised-button color="primary">Bid</button>
   </mat-card-actions>
 </mat-card>

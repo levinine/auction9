@@ -31,7 +31,7 @@ import { HomeComponent } from './home/home.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
+import { AddUpdateAuctionDialogComponent } from './add-update-auction-dialog/add-update-auction-dialog.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
 
 // Services
@@ -46,7 +46,7 @@ import { AuctionService } from './services/auction.service';
     UserAuctionsComponent,
     WonAuctionsComponent,
     PageNotFoundComponent,
-    AddAuctionDialogComponent,
+    AddUpdateAuctionDialogComponent,
     DataTableDetailsComponent,
   ],
   imports: [
@@ -83,7 +83,7 @@ import { AuctionService } from './services/auction.service';
   ],
   // dialogs
   entryComponents: [
-    AddAuctionDialogComponent
+    AddUpdateAuctionDialogComponent
   ]
 })
 export class AppModule { }
