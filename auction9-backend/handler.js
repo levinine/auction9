@@ -88,6 +88,25 @@ export const postAuction = async (event, context) => {
   }
 };
 
+/* getAuctionBids - returns auction bids (users' bids history)
+ * GET: auctions/{id}/bids
+ */
+export const getAuctionBids = async (event, context) => {
+  try {
+    // once we enable bidding, remove hardcoded auctionID
+    // let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
+    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=1 ORDER BY price');
+    await mysql.end();
+    return generateResponse(200, resultAuctionBids);
+  }
+  catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: "There was an error getting auction bids."
+    });
+  }
+};
+
 /* getMyAuctions - will return all auctions for current user
  * GET: /myauctions
  */

@@ -33,6 +33,7 @@ import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
+import { HistoryDialogComponent } from './history-dialog/history-dialog.component';
 
 // Services
 import { AuctionService } from './services/auction.service';
@@ -48,6 +49,7 @@ import { AuctionService } from './services/auction.service';
     PageNotFoundComponent,
     AddAuctionDialogComponent,
     DataTableDetailsComponent,
+    HistoryDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +85,8 @@ import { AuctionService } from './services/auction.service';
   ],
   // dialogs
   entryComponents: [
-    AddAuctionDialogComponent
+    AddAuctionDialogComponent,
+    HistoryDialogComponent
   ]
 })
 export class AppModule { }
