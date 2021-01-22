@@ -8,7 +8,7 @@
     alt="Photo of table" class="product-image">
   <mat-card-content>
   	<h2>The highest current bid: {{auction?.price}} din</h2>
-  	<h3>Remaining time: 1d 14h <i>({{auction?.date_to}})</i></h3>
+  	<h3>Remaining time: 1d 14h <i>({{endDateTime}})</i></h3>
   	<h4>Status:
   		<ng-template [ngIf]="auction?.status === 'INACTIVE'">
         <span class="badge badge-secondary">Inactive</span>
