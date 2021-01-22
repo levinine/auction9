@@ -40,14 +40,13 @@ export class AuctionService {
     return this.http.get(`${environment.baseUrl}/auctions/${auctionID}/bids`, { responseType: 'json' }).toPromise();
   }
 
-  /* getMyAuctions - return all auctions for current user
-  * Method: GET
-  * Path: /myauctions
-  */
-  // currently userId hard coded for testing purpose
-  // after SSO is implemented, this will be updated
-  getMyAuctions() {
-    return this.http.get(`${environment.baseUrl}/myauctions`,
+   /* getUserAuctions - returns auctions user has created
+   * Method: GET
+   * Path: /userAuctions */
+   // currently userId hard coded for testing purpose
+   // after SSO is implemented, this will be updated
+   getUserAuctions() {
+    return this.http.get(`${environment.baseUrl}/userAuctions`,
       {
         responseType: 'json',
         // currently hard coded user ID
@@ -55,7 +54,15 @@ export class AuctionService {
       }).toPromise();
   }
 
-  /* stopAuctionById - update status to inactive
+  /* updateArticle - updates an auction
+   * Method: PUT
+   * Path: /updateAuctions
+   */
+  updateAuction(auction) {
+    return this.http.put(`${environment.baseUrl}/updateAuction`, auction);
+  }
+
+   /* stopAuctionById - update status to inactive
    * Method: PUT
    * Path: /myauctions/id/stop 
    */
@@ -65,8 +72,7 @@ export class AuctionService {
 
    /* getMyWonAuctions - return all my won auctions for current user
    * Method: GET
-   * Path: /wonauctions 
-   */
+   * Path: /wonauctions */
    // currently userId hard coded for testing purpose
    // after SSO is implemented, this will be updated
    getMyWonAuctions() {
