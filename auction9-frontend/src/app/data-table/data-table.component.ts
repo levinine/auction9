@@ -39,7 +39,7 @@ export class DataTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private auctionService: AuctionService, private cdRef: ChangeDetectorRef) { }
+  constructor(private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource(Array.from(this.tableData));
