@@ -121,9 +121,6 @@
   <mat-error *ngIf="addOrUpdateAuctionForm.hasError('startTimeLessThanEndTime')">
     End time must be greater than start time
   </mat-error>
-  <mat-error *ngIf="addOrUpdateAuctionForm.hasError('minTimeGreaterThanNow')">
-    End time must be greater than start time
-  </mat-error>
 
   <button
     color=primary
