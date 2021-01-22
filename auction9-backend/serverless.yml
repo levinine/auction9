@@ -57,7 +57,16 @@ functions:
           method: post
           cors: true
 
-  # return all user auctions
+  # returns auction bids (users' bids history)
+  getAuctionBids:
+    handler: handler.getAuctionBids
+    events:
+      - http:
+          path: auctions/{id}/bids
+          method: get
+          cors: true
+
+# return all ysers auctions
   getUserAuctions:
     handler: handler.getUserAuctions
     events:
@@ -73,4 +82,22 @@ functions:
       - http:
           path: updateAuction
           method: put
+          cors: true
+
+  # update status to 'inactive'
+  stopActiveAuction:
+    handler: handler.stopActiveAuction
+    events:
+      - http:
+          path: myauctions/{id}/stop
+          method: put
+          cors: true
+
+  # return all my won auctions
+  getUserWonAuctions:
+    handler: handler.getUserWonAuctions
+    events:
+      - http:
+          path: wonauctions
+          method: get
           cors: true

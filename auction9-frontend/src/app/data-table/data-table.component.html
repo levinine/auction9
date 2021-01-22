@@ -15,7 +15,7 @@
 
       <!-- Price Column -->
       <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Price </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
         <td mat-cell *matCellDef="let row"> {{row.price}} din </td>
       </ng-container>
 
@@ -57,14 +57,22 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Stop </th>
           <td mat-cell *matCellDef="let row">
             <!-- button enabled only if auction is 'active'. This will change status to 'inactive' -->
-            <button
-              mat-mini-fab
-              color="warn"
-              [disabled]="row.status === 'ACTIVE' ? null : 'disabled'">
-              <!--<span class="material-icons">stop</span>-->
+            <button mat-mini-fab color="warn" [disabled]="row.status === 'ACTIVE' ? null : 'disabled'" (click)="stopActiveAuctionID(row.auctionID)">
               <mat-icon>stop</mat-icon>
             </button>
           </td>
+      </ng-container>
+
+      <!-- User Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+        <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+      </ng-container>
+
+      <!-- Time Column -->
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+        <td mat-cell *matCellDef="let row"> {{row.time | date: 'YYYY-MM-dd HH:MM:SS'}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
