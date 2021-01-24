@@ -41,4 +41,8 @@ export class DataTableDetailsComponent implements OnInit {
     });
   }
 
+  postNewBid(newOffer) {
+    console.log(newOffer);
+  }
+
 }
