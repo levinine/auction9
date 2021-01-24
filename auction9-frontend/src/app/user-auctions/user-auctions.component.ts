@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuctionService } from '../services/auction.service';
+import * as moment from 'moment';
+import { timeValidator } from '../custom-validators/start-end-time-validator';
 
 @Component({
   selector: 'app-user-auctions',
@@ -9,13 +11,34 @@ import { AuctionService } from '../services/auction.service';
 export class UserAuctionsComponent implements OnInit {
   tableData: any[];
   tableHeaders: string[];
+  // date formats
+  startDate: any;
+  startTime: any;
+  startDateTime: any;
+  endDate: any;
+  endTime: any;
+  endDateTime: any;
 
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
     this.auctionService.getUserAuctions().then((data: []) => {
       this.tableData = Array.from(data);
-      this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop', 'confirm'];
+      // format dates for each element
+      this.tableData.forEach((element) => {
+        // start date
+        this.startDate = moment(element.date_from).format("YYYY-MM-DD");
+        this.startTime = moment(element.date_from).format("HH:mm");
+        this.startDateTime = moment(this.startDate + ' ' + this.startTime).format("YYYY-MM-DD HH:mm");
+        element.date_from = this.startDateTime; // final format
+
+        // end date
+        this.endDate = moment(element.date_to).format("YYYY-MM-DD");
+        this.endTime = moment(element.date_to).format("HH:mm");
+        this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
+        element.date_to = this.endDateTime;
+      });
+      this.tableHeaders = ['auctionID', 'title', 'price', 'start_date', 'end_date', 'status', 'info', 'edit', 'stop', 'confirm'];
     });
   }
 
