@@ -49,6 +49,6 @@
           min="{{auction?.price + 1}}"
           required>
     	</mat-form-field>
-      <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' && bidOffer.value > auction?.price ? null : 'disabled'" (click)="postNewBid(bidOffer.value)">Bid</button>
+      <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' && bidOffer.value > auction?.price ? null : 'disabled'" (click)="postNewBid(auction, bidOffer.value)">Bid</button>
     </mat-card-actions>
 </mat-card>

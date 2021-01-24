@@ -244,3 +244,50 @@ export const realizeFinishedAuction = async (event, context) => {
     });
   }
 };
+
+/* postNewBid - creates new auction
+ * POST: /auctions/id/new
+ */
+export const postNewBid = async (event, context) => {
+  try {
+    let reqBody = JSON.parse(event.body);
+    let newBid = reqBody.newBid;
+    console.log(newBid + ' ' + reqBody.auction.price);
+    // checking if newbid is greater then current price
+    if (newBid > reqBody.auction.price) {
+      // date formatting
+      let bidDate = Date.now();
+      let todayDate = new Date(bidDate);
+      let currentYear = todayDate.getFullYear();
+      let currentMonth = todayDate.getMonth() + 1;
+      let currentDay = todayDate.getDate();
+      let currentHours = todayDate.getHours();
+      let currentMinutes = todayDate.getMinutes();
+      let currentSeconds = todayDate.getSeconds();
+      let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds
+      // 2021-10-25 06:25:15
+      console.log('Date: ' + formattedTodayDate);
+      // first create bid -> update current price with new bid
+      // current userid hardcoded
+      await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, reqBody.auction.auctionID, newBid, formattedTodayDate]);
+      await mysql.end();
+      await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, reqBody.auction.auctionID]);
+      await mysql.end();
+      return generateResponse(200, {
+        message: "Bid created successfully.",
+        auctionid: reqBody.auction.auctionID
+      });
+    } else {
+      return generateResponse(400, {
+        message: 'New bid must be greater then current price.'
+      });
+    }
+    //await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
+    //await mysql.end();
+  }
+  catch (error) {
+    return generateResponse(400, {
+      message: "There was an error creating a bid."
+    });
+  }
+};

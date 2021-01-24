@@ -110,3 +110,12 @@ functions:
           path: myauctions/{id}
           method: put
           cors: true
+
+  # creates new bid
+  postNewBid:
+    handler: handler.postNewBid
+    events:
+      - http:
+          path: auctions/{id}/new
+          method: post
+          cors: true
