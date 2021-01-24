@@ -93,9 +93,8 @@ export const postAuction = async (event, context) => {
  */
 export const getAuctionBids = async (event, context) => {
   try {
-    // once we enable bidding, remove hardcoded auctionID
-    // let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
-    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=1 ORDER BY price');
+    let auctionID = event.pathParameters.id;
+    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
     await mysql.end();
     return generateResponse(200, resultAuctionBids);
   }
