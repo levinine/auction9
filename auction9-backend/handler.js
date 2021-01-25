@@ -203,7 +203,7 @@ export const realizeFinishedAuction = async (event, context) => {
     await mysql.end();
     // requested status to be changed into
     let reqStatus = reqBody.changeStatus;
-    let statuses = {
+    const statuses = {
       inactive: 'INACTIVE',
       active: 'ACTIVE',
       finished: 'FINISHED',
