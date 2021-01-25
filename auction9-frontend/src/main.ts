@@ -35,22 +35,10 @@ Amplify.configure({
       scope: ['email', 'openid'],
       redirectSignIn: 'http://localhost:4200/',
       redirectSignOut: 'http://localhost:4200/',
-      responseType: 'token', // or 'token', note that REFRESH token will only be generated when the responseType is code
+      responseType: 'token', // 'code' or 'token', note that REFRESH token will only be generated when the responseType is code
     },
   },
 });
 
 // You can get the current config object
 const currentConfig = Auth.configure();
-
-Auth.currentAuthenticatedUser()
-  .then((user) => {
-    if (user) {
-      console.log('currently logged-in user', user);
-    } else {
-      Auth.federatedSignIn();
-    }
-  })
-  .catch((e) => {
-    Auth.federatedSignIn();
-  });

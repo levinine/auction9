@@ -5,6 +5,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -18,15 +19,18 @@ const routes: Routes = [
   },
   {
     path: 'myAuctions',
-    component: UserAuctionsComponent
+    component: UserAuctionsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'wonAuctions',
-    component: WonAuctionsComponent
+    component: WonAuctionsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'auctions/:id',
-    component: DataTableDetailsComponent
+    component: DataTableDetailsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

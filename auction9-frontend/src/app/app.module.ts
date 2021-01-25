@@ -20,7 +20,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Components
@@ -36,6 +36,8 @@ import { DataTableDetailsComponent } from './data-table/data-table-details/data-
 
 // Services
 import { AuctionService } from './services/auction.service';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { AuthGuard } from './auth/auth.guard';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,12 @@ import { AuctionService } from './services/auction.service';
   // services
   providers: [
     AuctionService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    AuthGuard
   ],
   bootstrap: [
     AppComponent
