@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Auth } from 'aws-amplify';
+import { AppComponent } from '../app.component';
 import { AuctionService } from '../services/auction.service';
 
 @Component({
@@ -11,24 +11,16 @@ export class HomeComponent implements OnInit {
   // array of all active auctions to be sent to data-table component
   tableData: any[];
   tableHeaders: string[];
-  isLoggedIn: boolean;
 
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
 
-    Auth.currentAuthenticatedUser()
-      .then((user) => {
-        this.auctionService.getActiveAuctions().then((data: []) => {
-          this.tableData = Array.from(data);
-          user ? this.tableHeaders = ['auctionID', 'title', 'price', 'info'] : this.tableHeaders = ['auctionID', 'title', 'price'];
-        });
-      })
-      .catch(err => {
-        this.auctionService.getActiveAuctions().then((data: []) => {
-          this.tableData = Array.from(data);
-          this.tableHeaders = ['auctionID', 'title', 'price'];
-        });
-      })
+    this.auctionService.getActiveAuctions().then((data: []) => {
+      this.tableData = Array.from(data);
+      this.tableHeaders = AppComponent.isLoggedIn ? ['auctionID', 'title', 'price', 'info'] : ['auctionID', 'title', 'price'];
+    }).catch(err => {
+      this.tableHeaders = ['auctionID', 'title', 'price'];
+    });
   }
 }

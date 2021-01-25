@@ -3,6 +3,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Auth } from '@aws-amplify/auth';
 import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/add-update-auction-dialog.component';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -10,13 +11,12 @@ import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/ad
   styleUrls: ['./sidenav.component.scss']
 })
 
-export class SidenavComponent implements OnInit, OnDestroy {
+export class SidenavComponent implements OnDestroy {
 
   @ViewChild('drawer') drawer: any;
 
   panelOpenState = false;
   mobileQuery: MediaQueryList;
-  isLoggedIn: boolean;
 
   private _mobileQueryListener: () => void;
 
@@ -29,19 +29,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
-  ngOnInit() {
-    Auth.currentAuthenticatedUser()
-      .then((user) => {
-        if (user) {
-          return this.isLoggedIn = true;
-        }
-        else {
-          return this.isLoggedIn = false;
-        }
-      })
-      .catch(() => {
-        return this.isLoggedIn = false;
-      })
+  // Getter is necessary only if variable is being used in html
+  get isLoggedIn() {
+    return AppComponent.isLoggedIn;
   }
 
   ngOnDestroy(): void {
