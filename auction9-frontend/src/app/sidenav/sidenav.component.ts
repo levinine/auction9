@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
+import { Auth } from '@aws-amplify/auth';
 import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/add-update-auction-dialog.component';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -9,7 +11,7 @@ import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/ad
   styleUrls: ['./sidenav.component.scss']
 })
 
-export class SidenavComponent implements OnInit, OnDestroy {
+export class SidenavComponent implements OnDestroy {
 
   @ViewChild('drawer') drawer: any;
 
@@ -21,14 +23,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    private dialog: MatDialog
-  ) {
+    private dialog: MatDialog) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
-  ngOnInit() { }
+  // Getter is necessary only if variable is being used in html
+  get isLoggedIn() {
+    return AppComponent.isLoggedIn;
+  }
 
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
@@ -40,6 +44,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Open dialog
   addAuction() {
     this.dialog.open(AddUpdateAuctionDialogComponent, {
       width: '600px',
@@ -50,4 +55,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Auth
+  onLoginClick() {
+    Auth.federatedSignIn();
+  }
+
+  onLogoutClick() {
+    Auth.signOut();
+  }
 }
