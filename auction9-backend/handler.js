@@ -54,8 +54,7 @@ export const getAuction = async (event, context) => {
  */
 export const getActiveAuctions = async (event, context) => {
   try {
-    let auctionActiveStatus = statuses.active;
-    let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [auctionActiveStatus]);
+    let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [statuses.active]);
     await mysql.end();
     return generateResponse(200, resultsActiveAuctions);
   }
