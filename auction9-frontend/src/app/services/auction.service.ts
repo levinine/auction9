@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -9,26 +9,27 @@ export class AuctionService {
 
   constructor(private http: HttpClient) { }
 
+  // For routes that can be accessed without signing in
+  noAuthHeader = new HttpHeaders({ 'NoAuth': 'True' });
+
+
   /* getActiveAuctions - returns all auctions with active state
    * Method: GET
-   * Path: /auctions
-   */
+   * Path: /auctions */
   getActiveAuctions() {
-    return this.http.get(`${environment.baseUrl}/auctions`, { responseType: 'json' }).toPromise();
+    return this.http.get(`${environment.baseUrl}/auctions`, { responseType: 'json', headers: this.noAuthHeader }).toPromise();
   }
 
   /* getAuctionById - returns auction with specific ID
    * Method: GET
-   * Path: /auctions/${auctionId}
-   */
+   * Path: /auctions/${auctionId} */
   getAuctionById(auctionId) {
     return this.http.get(`${environment.baseUrl}/auctions/${auctionId}`, { responseType: 'json' }).toPromise();
   }
 
   /* addAuction - creates new auction
    * Method: POST
-   * Path: /auctions
-   */
+   * Path: /auctions */
   addAuction(auction) {
     return this.http.post(`${environment.baseUrl}/auctions`, auction);
   }
@@ -64,8 +65,7 @@ export class AuctionService {
 
    /* stopAuctionById - update status to inactive
    * Method: PUT
-   * Path: /myauctions/id/stop 
-   */
+   * Path: /myauctions/id/stop  */
    stopAuctionById(auctionId) {
      return this.http.put(`${environment.baseUrl}/myauctions/${auctionId}/stop`, null).toPromise();
    }
@@ -76,7 +76,7 @@ export class AuctionService {
    // currently userId hard coded for testing purpose
    // after SSO is implemented, this will be updated
    getMyWonAuctions() {
-     return this.http.get(`${environment.baseUrl}/wonauctions`, 
+     return this.http.get(`${environment.baseUrl}/wonauctions`,
      {
        responseType: 'json',
        // same as getMyAuctions hard coded user ID
