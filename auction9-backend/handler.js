@@ -54,7 +54,7 @@ export const getAuction = async (event, context) => {
  */
 export const getActiveAuctions = async (event, context) => {
   try {
-    let auctionActiveStatus = 'active';
+    let auctionActiveStatus = statuses.active;
     let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [auctionActiveStatus]);
     await mysql.end();
     return generateResponse(200, resultsActiveAuctions);
@@ -75,7 +75,7 @@ export const postAuction = async (event, context) => {
     let reqBody = JSON.parse(event.body);
     let startDate = new Date(reqBody.date_from).valueOf();
     let endDate = new Date(reqBody.date_to).valueOf();
-    let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
+    let status = startDate > Date.now() ? statuses.inactive : statuses.active;
 
     if (startDate > endDate) {
       return generateResponse(400, {
@@ -120,9 +120,8 @@ export const getAuctionBids = async (event, context) => {
  */
 export const getUserAuctions = async (event, context) => {
   try {
-    // let currentUserId = event.multiValueQueryStringParameters.created_by[0];
-    // let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
-    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=2');
+    let currentUserId = event.multiValueQueryStringParameters.created_by[0];
+    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
     await mysql.end();
     return generateResponse(200, resultsMyAuctions);
   } catch (error) {
@@ -159,8 +158,7 @@ export const updateAuction = async (event, context) => {
 export const stopActiveAuction = async (event, context) => {
   try {
     let auctionId = event.pathParameters.id;
-    let statusInactive = 'INACTIVE';
-    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statusInactive, auctionId]);
+    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statuses.inactive, auctionId]);
     await mysql.end();
     return generateResponse(200, {
       message: 'Auction has been stopped successfully.'
