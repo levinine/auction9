@@ -44,9 +44,7 @@
         <input
           #bidOffer
           matInput
-          placeholder="Offer must start from: {{auction?.price + 1}} din"
-          value="{{auction?.price + 1}}"
-          min="{{auction?.price + 1}}"
+          placeholder="Offer must be greater then: {{auction?.price}} din"
           required>
     	</mat-form-field>
       <button 
