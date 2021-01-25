@@ -13,8 +13,8 @@ export class UserAuctionsComponent implements OnInit {
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
-    this.auctionService.getMyAuctions().then((data: []) => {
-      this.tableData = data;
+    this.auctionService.getUserAuctions().then((data: []) => {
+      this.tableData = Array.from(data);
       this.tableHeaders = ['auctionID', 'title', 'price', 'info', 'edit', 'stop'];
     });
   }

@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
-import { AddAuctionDialogComponent } from '../add-auction-dialog/add-auction-dialog.component';
 import { Auth } from '@aws-amplify/auth';
+import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/add-update-auction-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -56,9 +56,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   // Open dialog
   addAuction() {
-    const dialogRef = this.dialog.open(AddAuctionDialogComponent, {
+    this.dialog.open(AddUpdateAuctionDialogComponent, {
       width: '600px',
-      disableClose: true
+      disableClose: true,
+      data: {
+        update: false
+      }
     });
   }
 

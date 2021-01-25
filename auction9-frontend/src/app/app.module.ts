@@ -31,8 +31,9 @@ import { HomeComponent } from './home/home.component';
 import { UserAuctionsComponent } from './user-auctions/user-auctions.component';
 import { WonAuctionsComponent } from './won-auctions/won-auctions.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AddAuctionDialogComponent } from './add-auction-dialog/add-auction-dialog.component';
+import { AddUpdateAuctionDialogComponent } from './add-update-auction-dialog/add-update-auction-dialog.component';
 import { DataTableDetailsComponent } from './data-table/data-table-details/data-table-details.component';
+import { HistoryDialogComponent } from './history-dialog/history-dialog.component';
 
 // Services
 import { AuctionService } from './services/auction.service';
@@ -48,8 +49,9 @@ import { AuthGuard } from './auth/auth.guard';
     UserAuctionsComponent,
     WonAuctionsComponent,
     PageNotFoundComponent,
-    AddAuctionDialogComponent,
+    AddUpdateAuctionDialogComponent,
     DataTableDetailsComponent,
+    HistoryDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +93,8 @@ import { AuthGuard } from './auth/auth.guard';
   ],
   // dialogs
   entryComponents: [
-    AddAuctionDialogComponent
+    AddUpdateAuctionDialogComponent,
+    HistoryDialogComponent
   ]
 })
 export class AppModule { }
