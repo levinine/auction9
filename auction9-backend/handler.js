@@ -200,13 +200,19 @@ export const realizeFinishedAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
     let auctionId = reqBody.auction.auctionID;
-    let currentStatus = reqBody.auction.status;
+    let currentStatus = await mysql.query(`SELECT status FROM tbl_auction WHERE auctionID=?`,  [auctionId]);
+    await mysql.end();
     // requested status to be changed into
     let reqStatus = reqBody.changeStatus;
-    let possibleStatus = ['INACTIVE', 'ACTIVE', 'FINISHED', 'REALIZED'];
+    let statuses = {
+      inactive: 'INACTIVE',
+      active: 'ACTIVE',
+      finished: 'FINISHED',
+      realized: 'REALIZED',
+    };
     // check allowed status order
-    if (reqStatus === possibleStatus[3]) { // FINISHED -> REALIZED
-      if (currentStatus === possibleStatus[2]) {
+    if (reqStatus === statuses.realized) { // FINISHED -> REALIZED
+      if (currentStatus[0].status === statuses.finished) {
         await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
           [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
         await mysql.end();
@@ -214,8 +220,8 @@ export const realizeFinishedAuction = async (event, context) => {
           message: 'Auction successfully realized.'
         });
       }
-    } else if (reqStatus === possibleStatus[1]) { // INACTIVE -> ACTIVE
-      if (currentStatus === possibleStatus[0]) {
+    } else if (reqStatus === statuses.active) { // INACTIVE -> ACTIVE
+      if (currentStatus[0].status === statuses.inactive) {
         await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
           [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
         await mysql.end();
@@ -223,8 +229,8 @@ export const realizeFinishedAuction = async (event, context) => {
           message: 'Auction successfully activated.'
         });
       }
-    } else if (reqStatus === possibleStatus[0] || reqStatus === possibleStatus[2]) { // ACTIVE -> INACTIVE or ACTIVE -> FINISHED
-      if (currentStatus === possibleStatus[1]) {
+    } else if (reqStatus === statuses.inactive || reqStatus === statuses.finished) { // ACTIVE -> INACTIVE or ACTIVE -> FINISHED
+      if (currentStatus[0].status === statuses.active) {
         await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
           [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
         await mysql.end();

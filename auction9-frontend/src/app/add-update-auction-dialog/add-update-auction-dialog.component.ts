@@ -161,7 +161,6 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
               panelClass: ['light-snackbar']
             });
         }
-      setTimeout(() => location.reload(), 800);
     }
   }
 }

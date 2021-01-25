@@ -102,7 +102,7 @@ functions:
           method: get
           cors: true
 
-  # update status to 'inactive'
+  # update status to 'realized'
   realizeFinishedAuction:
     handler: handler.realizeFinishedAuction
     events:
