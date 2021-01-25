@@ -101,3 +101,12 @@ functions:
           path: wonauctions
           method: get
           cors: true
+
+  # update status to 'realized'
+  realizeFinishedAuction:
+    handler: handler.realizeFinishedAuction
+    events:
+      - http:
+          path: myauctions/{id}
+          method: put
+          cors: true

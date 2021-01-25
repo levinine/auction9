@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AuctionService } from '../services/auction.service';
 import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/add-update-auction-dialog.component';
 
 // our data structure
@@ -34,17 +35,19 @@ export class DataTableComponent implements AfterViewInit {
   @Input() tableHeaders: string[];
   // stop method from user-auctions
   @Input() stopActiveAuction: Function;
+  // confirm method from user-auctions
+  @Input() realizeAuction: Function;
 
   dataSource: MatTableDataSource<AuctionData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private cdRef: ChangeDetectorRef,
-    private dialog: MatDialog) { }
+  constructor(private auctionService: AuctionService, private cdRef: ChangeDetectorRef, private dialog: MatDialog) { }
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource(Array.from(this.tableData));
+
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.cdRef.detectChanges();
@@ -73,5 +76,9 @@ export class DataTableComponent implements AfterViewInit {
 
   stopActiveAuctionID(id) {
     this.stopActiveAuction(id);
+  }
+
+  realizeFinishedAuctionID(auction, status) {
+    this.realizeAuction(auction, status);
   }
 }

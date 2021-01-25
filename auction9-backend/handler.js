@@ -171,15 +171,82 @@ export const stopActiveAuction = async (event, context) => {
  * GET: /wonauctions
  */
 export const getUserWonAuctions = async (event, context) => {
-   try {
-     let currentUserId = event.multiValueQueryStringParameters.userId[0];
-     let resultsUserWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUserId]);
-     await mysql.end();
-     return generateResponse(200, resultsUserWonAuctions);
-   } catch (error) {
-     console.log(error);
-     return generateResponse(400, {
-       message: 'There was an error while getting my won auctions.'
-     });
-   }
+  try {
+    let currentUserId = event.multiValueQueryStringParameters.userId[0];
+    let resultsUserWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUserId]);
+    await mysql.end();
+    return generateResponse(200, resultsUserWonAuctions);
+  } catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: 'There was an error while getting my won auctions.'
+    });
+  }
+};
+
+
+/* Allowed status changes:
+ * order status: INACTIVE -> ACTIVE -> FINISHED -> REALIZED
+ * current -> new :
+ * INACTIVE -> ACTIVE   [x]
+ * ACTIVE -> INACTIVE   [x]
+ * ACTIVE -> FINISHED   [x]
+ * FINISHED -> REALIZED [x]
+ */
+/* realizeFinishedAuction - will update status for auction to 'realized'
+ * PUT: /myauctions/id
+ */
+export const realizeFinishedAuction = async (event, context) => {
+  try {
+    let reqBody = JSON.parse(event.body);
+    let auctionId = reqBody.auction.auctionID;
+    let currentStatus = await mysql.query(`SELECT status FROM tbl_auction WHERE auctionID=?`,  [auctionId]);
+    await mysql.end();
+    // requested status to be changed into
+    let reqStatus = reqBody.changeStatus;
+    const statuses = {
+      inactive: 'INACTIVE',
+      active: 'ACTIVE',
+      finished: 'FINISHED',
+      realized: 'REALIZED',
+    };
+    // check allowed status order
+    if (reqStatus === statuses.realized) { // FINISHED -> REALIZED
+      if (currentStatus[0].status === statuses.finished) {
+        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
+          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
+        await mysql.end();
+        return generateResponse(200, {
+          message: 'Auction successfully realized.'
+        });
+      }
+    } else if (reqStatus === statuses.active) { // INACTIVE -> ACTIVE
+      if (currentStatus[0].status === statuses.inactive) {
+        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
+          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
+        await mysql.end();
+        return generateResponse(200, {
+          message: 'Auction successfully activated.'
+        });
+      }
+    } else if (reqStatus === statuses.inactive || reqStatus === statuses.finished) { // ACTIVE -> INACTIVE or ACTIVE -> FINISHED
+      if (currentStatus[0].status === statuses.active) {
+        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
+          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
+        await mysql.end();
+        return generateResponse(200, {
+          message: 'Auction successfully stopped/finished.'
+        });
+      }
+    } else {
+      return generateResponse(400, {
+        message: 'Auction status could not be changed.'
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return generateResponse(400, {
+      message: 'There was an error while updating auction status.'
+    });
+  }
 };

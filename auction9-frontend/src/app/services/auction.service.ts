@@ -83,4 +83,12 @@ export class AuctionService {
        params: { userId: '2' },
      }).toPromise();
    }
+
+   /* realizeAuctionById - update status to inactive
+   * Method: PUT
+   * Path: /myauctions/id
+   */
+   realizeAuctionById(auction, status) {
+     return this.http.put(`${environment.baseUrl}/myauctions/${auction.auctionID}`, { auction, changeStatus: status }).toPromise();
+   }
 }
