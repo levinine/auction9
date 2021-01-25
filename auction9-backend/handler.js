@@ -1,3 +1,11 @@
+// statuses obj that can be used inside functions
+const statuses = {
+  inactive: 'INACTIVE',
+  active: 'ACTIVE',
+  finished: 'FINISHED',
+  realized: 'REALIZED',
+};
+
 // Require for mysql connection
 // Configuration is in serverless.yml file inside 'environment:'
 const mysql = require('serverless-mysql')({
@@ -204,12 +212,6 @@ export const realizeFinishedAuction = async (event, context) => {
     await mysql.end();
     // requested status to be changed into
     let reqStatus = reqBody.changeStatus;
-    const statuses = {
-      inactive: 'INACTIVE',
-      active: 'ACTIVE',
-      finished: 'FINISHED',
-      realized: 'REALIZED',
-    };
     // check allowed status order
     if (reqStatus === statuses.realized) { // FINISHED -> REALIZED
       if (currentStatus[0].status === statuses.finished) {
