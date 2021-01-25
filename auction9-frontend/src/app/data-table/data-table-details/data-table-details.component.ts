@@ -17,6 +17,7 @@ export class DataTableDetailsComponent implements OnInit {
   endDate: any;
   endTime: any;
   endDateTime: any;
+  totalNumberOfBids: any;
 
   constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
@@ -30,6 +31,10 @@ export class DataTableDetailsComponent implements OnInit {
       this.endDate = moment(this.auction.date_to).format("YYYY-MM-DD");
       this.endTime = moment(this.auction.date_to).format("HH:mm");
       this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
+    });
+
+    this.auctionService.getTotalNumberOfBids(auctionId).then((data: any) => {
+      this.totalNumberOfBids = data;
     });
   }
 

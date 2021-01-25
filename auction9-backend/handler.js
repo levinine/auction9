@@ -65,8 +65,8 @@ export const getActiveAuctions = async (event, context) => {
 export const postAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
-    var startDate = new Date(reqBody.date_from).valueOf();
-    var endDate = new Date(reqBody.date_to).valueOf();
+    let startDate = new Date(reqBody.date_from).valueOf();
+    let endDate = new Date(reqBody.date_to).valueOf();
     let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
 
     if (startDate > endDate) {
@@ -108,7 +108,7 @@ export const getAuctionBids = async (event, context) => {
 
 
 /* getUserAuctions - will return all auctions for current user
- * get: /userAuctions
+ * GET: /userAuctions
  */
 export const getUserAuctions = async (event, context) => {
   try {
@@ -127,7 +127,7 @@ export const getUserAuctions = async (event, context) => {
 
 
 /* updateAuction - updates an auction
- * put: /updateAuction
+ * PUT: /updateAuction
  */
 export const updateAuction = async (event, context) => {
   let reqBody = JSON.parse(event.body);
@@ -263,7 +263,7 @@ export const postNewBid = async (event, context) => {
       let currentHours = todayDate.getHours();
       let currentMinutes = todayDate.getMinutes();
       let currentSeconds = todayDate.getSeconds();
-      let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds
+      let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
       // 2021-10-25 06:25:15
       console.log('Date: ' + formattedTodayDate);
       // first create bid -> update current price with new bid
@@ -290,3 +290,21 @@ export const postNewBid = async (event, context) => {
     });
   }
 };
+
+/* getTotalNumberOfBids - will return all auctions for current user
+ * GET: /auctions/id/bidsnumber
+ */
+ export const getTotalNumberOfBids = async (event, context) => {
+   try {
+       let auctionID = event.pathParameters.id;
+       let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionID]);
+       let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
+       await mysql.end();
+       return generateResponse(200, totalNumberOfBids);
+   } catch (error) {
+     console.log(error);
+     return generateResponse(400, {
+       message: 'There was an error getting number of bids.'
+     });
+   }
+ };

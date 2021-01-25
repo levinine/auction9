@@ -119,3 +119,12 @@ functions:
           path: auctions/{id}/new
           method: post
           cors: true
+
+  # creates new bid
+  getTotalNumberOfBids:
+    handler: handler.getTotalNumberOfBids
+    events:
+      - http:
+          path: auctions/{id}/bidsnumber
+          method: GET
+          cors: true

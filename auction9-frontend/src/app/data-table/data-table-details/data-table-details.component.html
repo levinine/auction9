@@ -31,7 +31,7 @@
         color="primary"
         matTooltip="Go to history of all bids"
         aria-label="Button that will redirect user to the history of all bids for this product">
-		      +11
+		      +{{totalNumberOfBids}}
       </button>
 		</h4>
   	</div>
@@ -49,6 +49,12 @@
           min="{{auction?.price + 1}}"
           required>
     	</mat-form-field>
-      <button mat-raised-button color="primary" [disabled]="auction?.status === 'ACTIVE' && bidOffer.value > auction?.price ? null : 'disabled'" (click)="postNewBid(auction, bidOffer.value)">Bid</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [disabled]="auction?.status === 'ACTIVE' && bidOffer.value > auction?.price ? null : 'disabled'" 
+        (click)="postNewBid(auction, bidOffer.value)">
+        Bid
+      </button>
     </mat-card-actions>
 </mat-card>
