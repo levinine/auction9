@@ -282,8 +282,8 @@ export const postNewBid = async (event, context) => {
       let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [reqBody.auction.auctionID]);
       let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
       await mysql.end();
-      return generateResponse(200,  
-        { 
+      return generateResponse(200,
+        {
           resultsAuction,
           totalNumberOfBids
         });
