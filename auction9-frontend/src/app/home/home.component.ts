@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../app.component';
 import { AuctionService } from '../services/auction.service';
 
 @Component({
@@ -14,10 +15,12 @@ export class HomeComponent implements OnInit {
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
-    this.auctionService.getActiveAuctions().then((data: []) => {
-     this.tableData = Array.from(data);
-     this.tableHeaders = ['auctionID', 'title', 'price', 'info'];
-   });
-  }
 
+    this.auctionService.getActiveAuctions().then((data: []) => {
+      this.tableData = Array.from(data);
+      this.tableHeaders = AppComponent.isLoggedIn ? ['auctionID', 'title', 'price', 'info'] : ['auctionID', 'title', 'price'];
+    }).catch(err => {
+      this.tableHeaders = ['auctionID', 'title', 'price'];
+    });
+  }
 }

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { AuctionService } from './auction.service';
 
-describe('AuctionFetchService', () => {
+describe('AuctionService', () => {
   let service: AuctionService;
 
   beforeEach(() => {

@@ -1,19 +1,31 @@
 <div class="container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="toolbar">
-    <span class="material-icons icon" (click)="drawer.toggle()">
+    <span *ngIf="isLoggedIn" class="material-icons icon" (click)="drawer.toggle()">
       menu
     </span>
     <h1 class="app-name">Auction9</h1>
     <span class="spacer"></span>
-    <button mat-raised-button>
+    <button
+      mat-raised-button
+      *ngIf="!isLoggedIn"
+      (click)="onLoginClick()">
       <span class="material-icons">
         person
       </span>
       Login
     </button>
+    <button
+      mat-raised-button
+      *ngIf="isLoggedIn"
+      (click)="onLogoutClick()">
+      <span class="material-icons">
+        person
+      </span>
+      Logout
+    </button>
   </mat-toolbar>
 
-  <mat-sidenav-container class="sidenav-container">
+  <mat-sidenav-container *ngIf="isLoggedIn" class="sidenav-container">
     <mat-sidenav
       #drawer
       [opened]="mobileQuery.matches ? 'false' : 'true'"
@@ -57,4 +69,6 @@
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
+
+  <app-home *ngIf="!isLoggedIn"></app-home>
 </div>
