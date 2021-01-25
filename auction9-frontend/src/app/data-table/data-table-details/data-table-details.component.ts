@@ -49,7 +49,9 @@ export class DataTableDetailsComponent implements OnInit {
 
   postNewBid(auction, newBid) {
     this.auctionService.createNewBid(auction, newBid).then((data: any) => {
-      this.snackBar.open(`Bid created successfully for Auction ID: ${data.auctionid}`, '',
+      console.log(data[0]);
+      this.auction.price = data[0].price;
+      this.snackBar.open(`Bid created successfully for Auction ID: ${this.auction.auctionID}`, '',
       {
         duration: 2000,
         panelClass: ['light-snackbar']
@@ -61,7 +63,6 @@ export class DataTableDetailsComponent implements OnInit {
           panelClass: ['light-snackbar']
         });
       }
-      setTimeout(() => location.reload(), 2000);
     });
   }
 }
