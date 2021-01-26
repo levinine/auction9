@@ -256,39 +256,39 @@ export const postNewBid = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
     let auctionId = event.pathParameters.id;
-    console.log(auctionId);
     let newBid = reqBody.newBid;
-    let currentAuctionPrice = await mysql.query('SELECT price FROM tbl_auction WHERE auctionID=?', [auctionId]);
-    // checking if newbid is greater then current price
-    if (newBid > currentAuctionPrice[0].price) {
-      // date formatting
-      let bidDate = Date.now();
-      let todayDate = new Date(bidDate);
-      let currentYear = todayDate.getFullYear();
-      let currentMonth = todayDate.getMonth() + 1;
-      let currentDay = todayDate.getDate();
-      let currentHours = todayDate.getHours();
-      let currentMinutes = todayDate.getMinutes();
-      let currentSeconds = todayDate.getSeconds();
-      let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
-      // first create bid -> update current price with new bid
-      // current userid hardcoded
-      await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
-      await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
-      let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-      await mysql.end();
-      let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [reqBody.auction.auctionID]);
-      let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
-      await mysql.end();
-      return generateResponse(200,
-        {
-          resultsAuction,
-          totalNumberOfBids
+    let resultsAuction = await mysql.query('SELECT price, status FROM tbl_auction WHERE auctionID=?', [auctionId]);
+    await mysql.end();
+    // checking if auction is active
+    if (resultsAuction[0].status === statuses.active) {
+      // checking if newbid is greater then current price
+      if (newBid > resultsAuction[0].price) {
+        // date formatting
+        let bidDate = Date.now();
+        let todayDate = new Date(bidDate);
+        let currentYear = todayDate.getFullYear();
+        let currentMonth = todayDate.getMonth() + 1;
+        let currentDay = todayDate.getDate();
+        let currentHours = todayDate.getHours();
+        let currentMinutes = todayDate.getMinutes();
+        let currentSeconds = todayDate.getSeconds();
+        let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
+        // first create bid -> update current price with new bid
+        // current userid hardcoded
+        await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
+        await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
+        let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+        await mysql.end();
+        return generateResponse(200, resultsAuction);
+      } else {
+        return generateResponse(400, {
+          message: 'New bid must be greater then current price.'
         });
+      }
     } else {
-      return generateResponse(400, {
-        message: 'New bid must be greater then current price.'
-      });
+        return generateResponse(400, {
+          message: 'Current auction is not Active.'
+        });
     }
   }
   catch (error) {
