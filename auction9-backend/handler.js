@@ -40,8 +40,8 @@ export const getAuction = async (event, context) => {
     let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
     let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
     await mysql.end();
-    return generateResponse(200, 
-      { 
+    return generateResponse(200,
+      {
         auctionResults,
         totalNumberOfBids
       });
