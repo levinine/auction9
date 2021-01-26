@@ -94,12 +94,11 @@ export class AuctionService {
 
   /* postNewBid - create new bid for selected auction
    * Method: POST
-   * Path: /auctions/id/new
+   * Path: /auctions/id/bids
    */
    createNewBid(auction, newBid) {
-     return this.http.post(`${environment.baseUrl}/auctions/${auction.auctionID}/new`,
+     return this.http.post(`${environment.baseUrl}/auctions/${auction.auctionID}/bids`,
        {
-         auction,
          newBid: newBid
        }).toPromise();
    }

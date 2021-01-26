@@ -254,14 +254,15 @@ export const realizeFinishedAuction = async (event, context) => {
 };
 
 /* postNewBid - creates new auction
- * POST: /auctions/id/new
+ * POST: /auctions/id/bids
  */
 export const postNewBid = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
+    let auctionId = event.pathParameters.id;
+    console.log(auctionId);
     let newBid = reqBody.newBid;
-    let currentAuctionPrice = await mysql.query('SELECT price FROM tbl_auction WHERE auctionID=?', [reqBody.auction.auctionID]);
-    await mysql.end();
+    let currentAuctionPrice = await mysql.query('SELECT price FROM tbl_auction WHERE auctionID=?', [auctionId]);
     // checking if newbid is greater then current price
     if (newBid > currentAuctionPrice[0].price) {
       // date formatting
@@ -276,11 +277,9 @@ export const postNewBid = async (event, context) => {
       let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
       // first create bid -> update current price with new bid
       // current userid hardcoded
-      await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, reqBody.auction.auctionID, newBid, formattedTodayDate]);
-      await mysql.end();
-      await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, reqBody.auction.auctionID]);
-      await mysql.end();
-      let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [reqBody.auction.auctionID]);
+      await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
+      await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
+      let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
       await mysql.end();
       return generateResponse(200, resultsAuction);
     } else {
