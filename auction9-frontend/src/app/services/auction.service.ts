@@ -91,4 +91,15 @@ export class AuctionService {
    realizeAuctionById(auction, status) {
      return this.http.put(`${environment.baseUrl}/myauctions/${auction.auctionID}`, { auction, changeStatus: status }).toPromise();
    }
+
+  /* postNewBid - create new bid for selected auction
+   * Method: POST
+   * Path: /auctions/id/bids
+   */
+   createNewBid(auction, newBid) {
+     return this.http.post(`${environment.baseUrl}/auctions/${auction.auctionID}/bids`,
+       {
+         newBid: newBid
+       }).toPromise();
+   }
 }

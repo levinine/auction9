@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HistoryDialogComponent } from 'src/app/history-dialog/history-dialog.component';
 import * as moment from 'moment';
 import { timeValidator } from '../../custom-validators/start-end-time-validator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-data-table-details',
@@ -17,7 +18,7 @@ export class DataTableDetailsComponent implements OnInit {
   endTime: any;
   endDateTime: any;
 
-  constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog) { }
+  constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     // get auction id from url
@@ -41,4 +42,22 @@ export class DataTableDetailsComponent implements OnInit {
     });
   }
 
+  postNewBid(auction, newBid) {
+    this.auctionService.createNewBid(auction, newBid).then((data: any) => {
+      console.log(data[0]);
+      this.auction.price = data[0].price;
+      this.snackBar.open(`Bid created successfully for Auction ID: ${this.auction.auctionID}`, '',
+      {
+        duration: 2000,
+        panelClass: ['light-snackbar']
+      });
+      (err: any) => {
+        this.snackBar.open('Unable to create bid.', '',
+        {
+          duration: 2000,
+          panelClass: ['light-snackbar']
+        });
+      }
+    });
+  }
 }

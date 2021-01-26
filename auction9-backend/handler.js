@@ -1,3 +1,11 @@
+// statuses obj that can be used inside functions
+const statuses = {
+  inactive: 'INACTIVE',
+  active: 'ACTIVE',
+  finished: 'FINISHED',
+  realized: 'REALIZED',
+};
+
 // Require for mysql connection
 // Configuration is in serverless.yml file inside 'environment:'
 const mysql = require('serverless-mysql')({
@@ -204,12 +212,6 @@ export const realizeFinishedAuction = async (event, context) => {
     await mysql.end();
     // requested status to be changed into
     let reqStatus = reqBody.changeStatus;
-    const statuses = {
-      inactive: 'INACTIVE',
-      active: 'ACTIVE',
-      finished: 'FINISHED',
-      realized: 'REALIZED',
-    };
     // check allowed status order
     if (reqStatus === statuses.realized) { // FINISHED -> REALIZED
       if (currentStatus[0].status === statuses.finished) {
@@ -247,6 +249,56 @@ export const realizeFinishedAuction = async (event, context) => {
     console.log(error);
     return generateResponse(400, {
       message: 'There was an error while updating auction status.'
+    });
+  }
+};
+
+/* postNewBid - creates new auction
+ * POST: /auctions/id/bids
+ */
+export const postNewBid = async (event, context) => {
+  try {
+    let reqBody = JSON.parse(event.body);
+    let auctionId = event.pathParameters.id;
+    console.log(auctionId);
+    let newBid = reqBody.newBid;
+    let resultsAuction = await mysql.query('SELECT price, status FROM tbl_auction WHERE auctionID=?', [auctionId]);
+    await mysql.end();
+    // checking if auction is active
+    if (resultsAuction[0].status === statuses.active) {
+      // checking if newbid is greater then current price
+      if (newBid > resultsAuction[0].price) {
+        // date formatting
+        let bidDate = Date.now();
+        let todayDate = new Date(bidDate);
+        let currentYear = todayDate.getFullYear();
+        let currentMonth = todayDate.getMonth() + 1;
+        let currentDay = todayDate.getDate();
+        let currentHours = todayDate.getHours();
+        let currentMinutes = todayDate.getMinutes();
+        let currentSeconds = todayDate.getSeconds();
+        let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
+        // first create bid -> update current price with new bid
+        // current userid hardcoded
+        await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
+        await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
+        let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+        await mysql.end();
+        return generateResponse(200, resultsAuction);
+      } else {
+        return generateResponse(400, {
+          message: 'New bid must be greater then current price.'
+        });
+      }
+    } else {
+        return generateResponse(400, {
+          message: 'Current auction is not Active.'
+        });
+    }
+  }
+  catch (error) {
+    return generateResponse(400, {
+      message: "There was an error creating a bid."
     });
   }
 };
