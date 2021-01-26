@@ -103,7 +103,7 @@ export class AuctionService {
        }).toPromise();
    }
 
-   /* getTotalNumberOfBids - create new bid for selected auction
+   /* getTotalNumberOfBids - return total number of bids for selected auction
    * Method: GET
    * Path: /auctions/id/bidsnumber
    */

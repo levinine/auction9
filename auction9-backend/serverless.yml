@@ -126,5 +126,5 @@ functions:
     events:
       - http:
           path: auctions/{id}/bidsnumber
-          method: GET
+          method: get
           cors: true

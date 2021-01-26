@@ -249,7 +249,7 @@ export const realizeFinishedAuction = async (event, context) => {
   }
 };
 
-/* postNewBid - creates new auction
+/* postNewBid - creates new bid for selected auction
  * POST: /auctions/id/bids
  */
 export const postNewBid = async (event, context) => {
@@ -277,9 +277,14 @@ export const postNewBid = async (event, context) => {
         // current userid hardcoded
         await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
-        let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+        let updatedResultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+        let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
         await mysql.end();
-        return generateResponse(200, resultsAuction);
+        let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
+        return generateResponse(200, {
+          updatedResultsAuction,
+          totalNumberOfBids
+        });
       } else {
         return generateResponse(400, {
           message: 'New bid must be greater then current price.'
