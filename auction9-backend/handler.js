@@ -36,15 +36,10 @@ export const getAuction = async (event, context) => {
   try {
     // return ID of auction from path
     let auctionId = event.pathParameters.id;
-    let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-    let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
-    let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
+    // return auction + numberOfBids info
+    let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
-    return generateResponse(200,
-      {
-        auctionResults,
-        totalNumberOfBids
-      });
+    return generateResponse(200, resultsQuery);
   } catch (error) {
     console.log(error);
     return generateResponse(400, {

@@ -26,8 +26,8 @@ export class DataTableDetailsComponent implements OnInit {
     const auctionId = this.router.snapshot.params['id'];
     this.auctionService.getAuctionById(auctionId).then((data: any) => {
       // save data
-      this.auction = data.auctionResults[0];
-      this.totalNumberOfBids = data.totalNumberOfBids;
+      this.auction = data[0];
+      this.totalNumberOfBids = data[0].numberOfBids;
 
       this.endDate = moment(this.auction.date_to).format("YYYY-MM-DD");
       this.endTime = moment(this.auction.date_to).format("HH:mm");
