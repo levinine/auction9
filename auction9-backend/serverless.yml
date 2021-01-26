@@ -116,7 +116,7 @@ functions:
     handler: handler.postNewBid
     events:
       - http:
-          path: auctions/{id}/new
+          path: auctions/{id}/bids
           method: post
           cors: true
 
