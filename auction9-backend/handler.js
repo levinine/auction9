@@ -37,11 +37,15 @@ export const getAuction = async (event, context) => {
     // return ID of auction from path
     let auctionId = event.pathParameters.id;
     let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-    // Run clean up function
+    let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
+    let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
     await mysql.end();
-    return generateResponse(200, auctionResults[0]);
-  }
-  catch (error) {
+    return generateResponse(200, 
+      { 
+        auctionResults,
+        totalNumberOfBids
+      });
+  } catch (error) {
     console.log(error);
     return generateResponse(400, {
       message: "There was an error getting an auction."
@@ -302,21 +306,3 @@ export const postNewBid = async (event, context) => {
     });
   }
 };
-
-/* getTotalNumberOfBids - will return all auctions for current user
- * GET: /auctions/id/bidsnumber
- */
- export const getTotalNumberOfBids = async (event, context) => {
-   try {
-       let auctionID = event.pathParameters.id;
-       let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionID]);
-       let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
-       await mysql.end();
-       return generateResponse(200, totalNumberOfBids);
-   } catch (error) {
-     console.log(error);
-     return generateResponse(400, {
-       message: 'There was an error getting number of bids.'
-     });
-   }
- };

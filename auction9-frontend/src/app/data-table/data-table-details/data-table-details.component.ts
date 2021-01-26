@@ -24,17 +24,14 @@ export class DataTableDetailsComponent implements OnInit {
   ngOnInit(): void {
     // get auction id from url
     const auctionId = this.router.snapshot.params['id'];
-    this.auctionService.getAuctionById(auctionId).then((data) => {
+    this.auctionService.getAuctionById(auctionId).then((data: any) => {
       // save data
-      this.auction = data;
+      this.auction = data.auctionResults[0];
+      this.totalNumberOfBids = data.totalNumberOfBids;
 
       this.endDate = moment(this.auction.date_to).format("YYYY-MM-DD");
       this.endTime = moment(this.auction.date_to).format("HH:mm");
       this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
-    });
-
-    this.auctionService.getTotalNumberOfBids(auctionId).then((data: any) => {
-      this.totalNumberOfBids = data;
     });
   }
 
