@@ -17,15 +17,17 @@ export class DataTableDetailsComponent implements OnInit {
   endDate: any;
   endTime: any;
   endDateTime: any;
+  totalNumberOfBids: any;
 
   constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     // get auction id from url
     const auctionId = this.router.snapshot.params['id'];
-    this.auctionService.getAuctionById(auctionId).then((data) => {
+    this.auctionService.getAuctionById(auctionId).then((data: any) => {
       // save data
-      this.auction = data;
+      this.auction = data[0];
+      this.totalNumberOfBids = data[0].numberOfBids;
 
       this.endDate = moment(this.auction.date_to).format("YYYY-MM-DD");
       this.endTime = moment(this.auction.date_to).format("HH:mm");
@@ -44,8 +46,8 @@ export class DataTableDetailsComponent implements OnInit {
 
   postNewBid(auction, newBid) {
     this.auctionService.createNewBid(auction, newBid).then((data: any) => {
-      console.log(data[0]);
       this.auction.price = data[0].price;
+      this.totalNumberOfBids = data[0].numberOfBids;
       this.snackBar.open(`Bid created successfully for Auction ID: ${this.auction.auctionID}`, '',
       {
         duration: 2000,

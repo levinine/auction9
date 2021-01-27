@@ -36,12 +36,12 @@ export const getAuction = async (event, context) => {
   try {
     // return ID of auction from path
     let auctionId = event.pathParameters.id;
-    let auctionResults = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-    // Run clean up function
+    // return auction + numberOfBids info
+    let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
-    return generateResponse(200, auctionResults[0]);
-  }
-  catch (error) {
+    console.log(resultsQuery);
+    return generateResponse(200, resultsQuery);
+  } catch (error) {
     console.log(error);
     return generateResponse(400, {
       message: "There was an error getting an auction."
@@ -54,8 +54,7 @@ export const getAuction = async (event, context) => {
  */
 export const getActiveAuctions = async (event, context) => {
   try {
-    let auctionActiveStatus = 'active';
-    let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [auctionActiveStatus]);
+    let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [statuses.active]);
     await mysql.end();
     return generateResponse(200, resultsActiveAuctions);
   }
@@ -73,9 +72,16 @@ export const getActiveAuctions = async (event, context) => {
 export const postAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
-    var startDate = new Date(reqBody.date_from).valueOf();
-    var endDate = new Date(reqBody.date_to).valueOf();
-    let status = startDate > Date.now() ? 'INACTIVE' : 'ACTIVE';
+    let startDate = new Date(reqBody.date_from).valueOf();
+    let endDate = new Date(reqBody.date_to).valueOf();
+    let status = '';
+    if (startDate > Date.now()) {
+      status = statuses.inactive;
+    } else {
+      return generateResponse(400, {
+        message: 'Not possible to create an auction which start time has passed.'
+      });
+    }
 
     if (startDate > endDate) {
       return generateResponse(400, {
@@ -101,9 +107,8 @@ export const postAuction = async (event, context) => {
  */
 export const getAuctionBids = async (event, context) => {
   try {
-    // once we enable bidding, remove hardcoded auctionID
-    // let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
-    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=1 ORDER BY price');
+    let auctionID = event.pathParameters.id;
+    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
     await mysql.end();
     return generateResponse(200, resultAuctionBids);
   }
@@ -117,13 +122,12 @@ export const getAuctionBids = async (event, context) => {
 
 
 /* getUserAuctions - will return all auctions for current user
- * get: /userAuctions
+ * GET: /userAuctions
  */
 export const getUserAuctions = async (event, context) => {
   try {
-    // let currentUserId = event.multiValueQueryStringParameters.created_by[0];
-    // let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
-    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=2');
+    let currentUserId = event.multiValueQueryStringParameters.created_by[0];
+    let resultsMyAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE created_by=?', [currentUserId]);
     await mysql.end();
     return generateResponse(200, resultsMyAuctions);
   } catch (error) {
@@ -136,7 +140,7 @@ export const getUserAuctions = async (event, context) => {
 
 
 /* updateAuction - updates an auction
- * put: /updateAuction
+ * PUT: /updateAuction
  */
 export const updateAuction = async (event, context) => {
   let reqBody = JSON.parse(event.body);
@@ -160,8 +164,7 @@ export const updateAuction = async (event, context) => {
 export const stopActiveAuction = async (event, context) => {
   try {
     let auctionId = event.pathParameters.id;
-    let statusInactive = 'INACTIVE';
-    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statusInactive, auctionId]);
+    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statuses.inactive, auctionId]);
     await mysql.end();
     return generateResponse(200, {
       message: 'Auction has been stopped successfully.'
@@ -253,14 +256,13 @@ export const realizeFinishedAuction = async (event, context) => {
   }
 };
 
-/* postNewBid - creates new auction
+/* postNewBid - creates new bid for selected auction
  * POST: /auctions/id/bids
  */
 export const postNewBid = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
     let auctionId = event.pathParameters.id;
-    console.log(auctionId);
     let newBid = reqBody.newBid;
     let resultsAuction = await mysql.query('SELECT price, status FROM tbl_auction WHERE auctionID=?', [auctionId]);
     await mysql.end();
@@ -282,9 +284,9 @@ export const postNewBid = async (event, context) => {
         // current userid hardcoded
         await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
-        let resultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
+        let updatedResultsAuction = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
         await mysql.end();
-        return generateResponse(200, resultsAuction);
+        return generateResponse(200, updatedResultsAuction);
       } else {
         return generateResponse(400, {
           message: 'New bid must be greater then current price.'

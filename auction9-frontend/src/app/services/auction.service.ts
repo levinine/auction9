@@ -102,4 +102,12 @@ export class AuctionService {
          newBid: newBid
        }).toPromise();
    }
+
+   /* getTotalNumberOfBids - return total number of bids for selected auction
+   * Method: GET
+   * Path: /auctions/id/bidsnumber
+   */
+   getTotalNumberOfBids(auctionId) {
+     return this.http.get(`${environment.baseUrl}/auctions/${auctionId}/bidsnumber`, { responseType: 'json' }).toPromise();
+   }
 }
