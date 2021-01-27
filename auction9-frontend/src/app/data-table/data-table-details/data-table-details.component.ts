@@ -46,8 +46,8 @@ export class DataTableDetailsComponent implements OnInit {
 
   postNewBid(auction, newBid) {
     this.auctionService.createNewBid(auction, newBid).then((data: any) => {
-      this.auction.price = data.updatedResultsAuction[0].price;
-      this.totalNumberOfBids = data.totalNumberOfBids;
+      this.auction.price = data[0].price;
+      this.totalNumberOfBids = data[0].numberOfBids;
       this.snackBar.open(`Bid created successfully for Auction ID: ${this.auction.auctionID}`, '',
       {
         duration: 2000,
