@@ -39,6 +39,7 @@ export const getAuction = async (event, context) => {
     // return auction + numberOfBids info
     let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
+    console.log(resultsQuery);
     return generateResponse(200, resultsQuery);
   } catch (error) {
     console.log(error);
@@ -277,9 +278,9 @@ export const postNewBid = async (event, context) => {
         await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
         let updatedResultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-        let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
+        let numberOfBids = await mysql.query('SELECT COUNT(*) as numberOfBidsQ FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
         await mysql.end();
-        let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
+        let totalNumberOfBids = numberOfBids[0].numberOfBidsQ;
         return generateResponse(200, {
           updatedResultsAuction,
           totalNumberOfBids
