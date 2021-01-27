@@ -74,7 +74,14 @@ export const postAuction = async (event, context) => {
     let reqBody = JSON.parse(event.body);
     let startDate = new Date(reqBody.date_from).valueOf();
     let endDate = new Date(reqBody.date_to).valueOf();
-    let status = startDate > Date.now() ? statuses.inactive : statuses.active;
+    let status = '';
+    if (startDate > Date.now()) {
+      status = statuses.inactive;
+    } else {
+      return generateResponse(400, {
+        message: 'Not possible to create an auction which start time has passed.'
+      });
+    }
 
     if (startDate > endDate) {
       return generateResponse(400, {
