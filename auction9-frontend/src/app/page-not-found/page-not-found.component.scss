@@ -58,13 +58,13 @@ h1 small {
 }
 
 .red {
-  background: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-1.png) no-repeat center center;
+  background: url("../../assets/404/red/red-1.png") no-repeat center center;
   opacity: 1;
   animation: red 3s linear infinite, opacityRed 5s linear alternate infinite;
 }
 
 .blue {
-  background: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-1.png) no-repeat center center;
+  background: url("../../assets/404/blue/blue-1.png") no-repeat center center;
   opacity: 0;
   animation: blue 3s linear infinite, opacityBlue 5s linear alternate infinite;
 }
@@ -86,67 +86,67 @@ h1 small {
 
 @keyframes blue {
   0% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-1.png) 
+    background-image: url("../../assets/404/blue/blue-1.png") 
   }
   9.09% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-2.png) 
+    background-image: url("../../assets/404/blue/blue-2.png") 
   }
   27.27% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-3.png) 
+    background-image: url("../../assets/404/blue/blue-3.png") 
   }
   36.36% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-4.png) 
+    background-image: url("../../assets/404/blue/blue-4.png") 
   }
   45.45% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-5.png) 
+    background-image: url("../../assets/404/blue/blue-5.png") 
   }
   54.54% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-6.png) 
+    background-image: url("../../assets/404/blue/blue-6.png") 
   }
   63.63% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-7.png) 
+    background-image: url("../../assets/404/blue/blue-7.png") 
   }
   72.72% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-8.png) 
+    background-image: url("../../assets/404/blue/blue-8.png") 
   }
   81.81% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-9.png) 
+    background-image: url("../../assets/404/blue/blue-9.png") 
   }
   100% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/blue/blue-1.png) 
+    background-image: url("../../assets/404/blue/blue-1.png") 
   }
 }
 
 @keyframes red {
   0% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-1.png) 
+    background-image: url("../../assets/404/red/red-1.png") 
   }
   9.09% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-2.png) 
+    background-image: url("../../assets/404/red/red-2.png") 
   }
   27.27% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-3.png) 
+    background-image: url("../../assets/404/red/red-3.png") 
   }
   36.36% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-4.png) 
+    background-image: url("../../assets/404/red/red-4.png") 
   }
   45.45% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-5.png) 
+    background-image: url("../../assets/404/red/red-5.png") 
   }
   54.54% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-6.png) 
+    background-image: url("../../assets/404/red/red-6.png") 
   }
   63.63% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-7.png) 
+    background-image: url("../../assets/404/red/red-7.png") 
   }
   72.72% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-8.png) 
+    background-image: url("../../assets/404/red/red-8.png") 
   }
   81.81% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-9.png) 
+    background-image: url("../../assets/404/red/red-9.png")
   }
   100% {
-    background-image: url(https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/images404/red/red-1.png) 
+    background-image: url("../../assets/404/red/red-1.png")
   }
 }
 
