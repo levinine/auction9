@@ -33,8 +33,8 @@ Amplify.configure({
     oauth: {
       domain: 'auction9.auth.eu-west-1.amazoncognito.com',
       scope: ['email', 'openid'],
-      redirectSignIn: 'http://localhost:4200/',
-      redirectSignOut: 'http://localhost:4200/',
+      redirectSignIn: `${environment.redirectSignInOut}`,
+      redirectSignOut: `${environment.redirectSignInOut}`,
       responseType: 'token', // 'code' or 'token', note that REFRESH token will only be generated when the responseType is code
     },
   },
