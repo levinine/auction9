@@ -3,23 +3,35 @@ import { ActivatedRoute } from '@angular/router';
 import { AuctionService } from '../../services/auction.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HistoryDialogComponent } from 'src/app/history-dialog/history-dialog.component';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Storage } from 'aws-amplify';
+import { awsConfigure } from 'src/environments/environment';
 import * as moment from 'moment';
-import { timeValidator } from '../../custom-validators/start-end-time-validator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-data-table-details',
   templateUrl: './data-table-details.component.html',
-  styleUrls: ['./data-table-details.component.scss']
+  styleUrls: ['./data-table-details.component.scss'],
+  providers: [NgbCarouselConfig]
 })
 export class DataTableDetailsComponent implements OnInit {
   auction: any;
+  images = [];
+  imageUrl: string;
   endDate: any;
   endTime: any;
   endDateTime: any;
   totalNumberOfBids: any;
 
-  constructor(private router: ActivatedRoute, private auctionService: AuctionService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
+  constructor(private router: ActivatedRoute,
+    private auctionService: AuctionService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    config: NgbCarouselConfig) {
+    config.interval = 0;
+    config.pauseOnHover = false;
+  }
 
   ngOnInit(): void {
     // get auction id from url
@@ -33,10 +45,18 @@ export class DataTableDetailsComponent implements OnInit {
       this.endTime = moment(this.auction.date_to).format("HH:mm");
       this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
     });
+
+    Storage.list(`${auctionId}`).then(data => {
+      data.forEach(res => {
+        // generate url
+        this.imageUrl = `${awsConfigure.imageUrl}${res.key}`;
+        this.images.push(this.imageUrl);
+      });
+    });
   }
 
   showHistory() {
-    const dialogRef = this.dialog.open(HistoryDialogComponent, {
+    this.dialog.open(HistoryDialogComponent, {
       width: '600px',
       data: {
         auctionID: this.auction.auctionID

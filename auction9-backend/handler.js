@@ -88,10 +88,13 @@ export const postAuction = async (event, context) => {
         message: "End date must be after start date."
       });
     }
+
     await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
+    let lastInsertedID = await mysql.query('SELECT LAST_INSERT_ID()');
     await mysql.end();
     return generateResponse(200, {
-      message: "Auction created successfully."
+      message: "Auction created successfully.",
+      auctionID: lastInsertedID[0]['LAST_INSERT_ID()']
     });
   }
   catch (error) {

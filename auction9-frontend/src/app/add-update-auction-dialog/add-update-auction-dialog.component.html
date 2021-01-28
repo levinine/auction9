@@ -52,7 +52,8 @@
   <mat-form-field appearance="fill" class="datepicker">
     <mat-label>Start and end date</mat-label>
     <mat-date-range-input
-      [rangePicker]="picker">
+      [rangePicker]="picker"
+      [min]="minDate">
       <input
         matStartDate
         formControlName="startDate"
@@ -60,7 +61,8 @@
       <input
         matEndDate
         formControlName="endDate"
-        placeholder="End date">
+        placeholder="End date"
+        (dateInput)="inputChange()">
     </mat-date-range-input>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
@@ -86,6 +88,7 @@
         formControlName="startTime"
         [ngxTimepicker]="starttimepicker"
         [format]="24"
+        [min]="minTime"
         [value]="'00:00 am'"
         [defaultValue]="'07:00'"/>
     <mat-icon matPrefix>
@@ -121,16 +124,15 @@
   <mat-error *ngIf="addOrUpdateAuctionForm.hasError('startTimeLessThanEndTime')">
     End time must be greater than start time
   </mat-error>
+  <mat-error *ngIf="addOrUpdateAuctionForm.hasError('startTimeIsNotInThePast')">
+    Start time can not be in the past
+  </mat-error>
 
-  <button
-    color=primary
-    mat-raised-button
-    class="add-auction-button">
-    <span class="material-icons">
-      upload
-    </span>
-    Upload photos
-  </button>
+  <!-- Upload photos -->
+  <h2 mat-dialog-title class="text-upload"> Upload photos </h2>
+  <div class="btn-upload">
+    <input multiple class="input" type="file" (change)="selectFiles($event)">
+  </div>
 
   <!-- Add/update article button -->
   <div mat-dialog-actions align="center">

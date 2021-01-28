@@ -31,7 +31,7 @@ export class AuctionService {
    * Method: POST
    * Path: /auctions */
   addAuction(auction) {
-    return this.http.post(`${environment.baseUrl}/auctions`, auction);
+    return this.http.post(`${environment.baseUrl}/auctions`, auction).toPromise();
   }
 
   /* getAuctionBids - returns auction bids (users' bids history)
@@ -60,7 +60,7 @@ export class AuctionService {
    * Path: /updateAuctions
    */
   updateAuction(auction) {
-    return this.http.put(`${environment.baseUrl}/updateAuction`, auction);
+    return this.http.put(`${environment.baseUrl}/updateAuction`, auction).toPromise();
   }
 
    /* stopAuctionById - update status to inactive
