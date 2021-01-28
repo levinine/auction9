@@ -18,6 +18,7 @@
     "serverless-offline": "^5.3.3"
   },
   "dependencies": {
+    "jsonwebtoken": "^8.5.1",
     "serverless-mysql": "^1.5.4"
   }
 }

@@ -73,13 +73,12 @@ export class DataTableDetailsComponent implements OnInit {
         duration: 2000,
         panelClass: ['light-snackbar']
       });
-      (err: any) => {
-        this.snackBar.open('Unable to create bid.', '',
-        {
-          duration: 2000,
-          panelClass: ['light-snackbar']
-        });
-      }
+    }).catch((err: any) => {
+      this.snackBar.open('Unable to create bid.', '',
+      {
+        duration: 2000,
+        panelClass: ['light-snackbar']
+      });
     });
   }
 }

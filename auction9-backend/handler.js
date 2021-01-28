@@ -1,3 +1,19 @@
+// jwt package required
+// čuvanje usera iz cognito triggera
+// mapiranje atributa sa AD/Azure:
+// id -> external_id
+// email -> email
+// name -> name
+// After login we check if we have that user id in our DB
+// if NO we add his info into DB, else nothing just continue
+// maybe: sql select query to find userID=jwt.userID
+// if result is empty or [] something like that, it means that user doesn't exist so we create new
+// event.requestContext.authorizer.claims.email
+//const jwt = require('jsonwebtoken');
+// external_id = event.requestContext.authorizer.claims.sub ---- nova kolona u tbl_user
+// name = event.requestContext.authorizer.name
+// email = event.requestContext.authorizer.email
+
 // statuses obj that can be used inside functions
 const statuses = {
   inactive: 'INACTIVE',
@@ -39,7 +55,6 @@ export const getAuction = async (event, context) => {
     // return auction + numberOfBids info
     let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
-    console.log(resultsQuery);
     return generateResponse(200, resultsQuery);
   } catch (error) {
     console.log(error);
@@ -54,6 +69,7 @@ export const getAuction = async (event, context) => {
  */
 export const getActiveAuctions = async (event, context) => {
   try {
+    console.log(event.requestContext.authorizer.sub);
     let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [statuses.active]);
     await mysql.end();
     return generateResponse(200, resultsActiveAuctions);
