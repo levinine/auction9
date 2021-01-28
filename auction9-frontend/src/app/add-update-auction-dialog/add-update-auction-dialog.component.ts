@@ -2,7 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Storage } from 'aws-amplify';
 import * as moment from 'moment';
+import { minStartTimeValidator } from '../custom-validators/min-start-time-validator';
 import { timeValidator } from '../custom-validators/start-end-time-validator';
 import { AuctionService } from '../services/auction.service';
 
@@ -11,13 +13,16 @@ import { AuctionService } from '../services/auction.service';
   templateUrl: './add-update-auction-dialog.component.html',
   styleUrls: ['./add-update-auction-dialog.component.scss']
 })
-export class AddUpdateAuctionDialogComponent implements OnInit {
+export class AddUpdateAuctionDialogComponent {
 
   addOrUpdateAuctionForm: FormGroup;
   update: boolean;
   auctionID: number;
   auctions: any;
   auction: any;
+  selectedFiles: any;
+  minDate: string;
+  minTime: string;
 
   constructor(private auctionService: AuctionService,
     private snackBar: MatSnackBar,
@@ -34,7 +39,18 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
       this.auction = this.auctions.find(obj => obj.auctionID == this.auctionID);
       this.renderForm(this.auction);
     }
+
+    this.minDate = moment(new Date()).format('YYYY-MM-DD');
   }
+
+  inputChange() {
+    if (moment(this.addOrUpdateAuctionForm.get('dateGroup.startDate').value).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")) {
+      if (this.addOrUpdateAuctionForm.controls.startTime.value < moment(new Date()).format("hh:mm")) {
+        this.minTime = moment(new Date()).format('hh:mm');
+      }
+    }
+  }
+
 
   renderForm(auction): void {
 
@@ -68,15 +84,13 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
       ]),
     }, {
       validators: [
-        timeValidator
+        timeValidator, minStartTimeValidator
       ],
       updateOn: "change"
     });
   }
 
-  ngOnInit(): void {
-  };
-
+  // Dates formatting
   setDates() {
     let startDate = this.addOrUpdateAuctionForm.get('dateGroup.startDate').value;
     let endDate = this.addOrUpdateAuctionForm.get('dateGroup.endDate').value;
@@ -87,18 +101,15 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
     let formattedStartDate = moment(startDate).format("YYYY-MM-DD");
     let formattedEndDate = moment(endDate).format("YYYY-MM-DD");
 
-    // Concatenating date and time
-    let concStartDateTime = moment(formattedStartDate + " " + startTime);
-    let concEndDateTime = moment(formattedEndDate + " " + endTime);
-
     // Formatting concatenated date and time
-    let startDateTime = moment(concStartDateTime).format("YYYY-MM-DD HH:mm:ss");
-    let endDateTime = moment(concEndDateTime).format("YYYY-MM-DD HH:mm:ss");
+    let startDateTime = moment(formattedStartDate + " " + startTime).format("YYYY-MM-DD HH:mm:ss");
+    let endDateTime = moment(formattedEndDate + " " + endTime).format("YYYY-MM-DD HH:mm:ss");
 
     return { startDateTime, endDateTime };
   }
 
 
+  // Create and update auction
   onCreateAuctionClick() {
     if (this.addOrUpdateAuctionForm.invalid) {
       return;
@@ -116,19 +127,22 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
           "date_from": startDateTime,
           "date_to": endDateTime,
           "created_by": 1
-        }).subscribe(() => {
+        }).then((data: any) => {
+
+          this.uploadFile(data.auctionID);
+
           this.snackBar.open('Auction created successfully.', '',
             {
               duration: 2000,
               panelClass: ['light-snackbar']
             });
-        }), (err: any) => {
+        }).catch((err: any) => {
           this.snackBar.open('Unable to create auction.', '',
             {
               duration: 2000,
               panelClass: ['light-snackbar']
             });
-        }
+        });
     }
   }
 
@@ -148,19 +162,35 @@ export class AddUpdateAuctionDialogComponent implements OnInit {
           "price": this.addOrUpdateAuctionForm.controls.price.value,
           "date_from": startDateTime,
           "date_to": endDateTime,
-        }).subscribe(() => {
+        }).then(() => {
           this.snackBar.open('Auction updated successfully.', '',
             {
               duration: 2000,
               panelClass: ['light-snackbar']
             });
-        }), (err: any) => {
+        }).catch((err: any) => {
           this.snackBar.open('Unable to update auction.', '',
             {
               duration: 2000,
               panelClass: ['light-snackbar']
             });
-        }
+        });
     }
+  }
+
+
+  // Files upload
+  uploadFile(auctionID: number) {
+    [...this.selectedFiles].forEach(file => {
+      // `${auctionID}/ - folder name
+      // ${file.name}` - file name
+      Storage.put(`${auctionID}/${file.name}`, file, {
+        contentType: 'image'
+      })
+    });
+  }
+
+  selectFiles(event) {
+    this.selectedFiles = event.target.files;
   }
 }

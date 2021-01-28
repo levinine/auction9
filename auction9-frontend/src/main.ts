@@ -1,9 +1,7 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
 import { Amplify } from '@aws-amplify/core';
 import { Auth } from '@aws-amplify/auth';
 
@@ -19,6 +17,9 @@ Amplify.configure({
   Auth: {
     // REQUIRED - Amazon Cognito Region
     region: 'eu-west-1',
+
+    //REQUIRED - Amazon Cognito Identity Pool ID
+    identityPoolId: 'eu-west-1:708b1637-6afc-4698-b5a0-6c8f2cd3b52e',
 
     // OPTIONAL - Amazon Cognito User Pool ID
     userPoolId: 'eu-west-1_hx2LFOcz2',
@@ -37,6 +38,15 @@ Amplify.configure({
       redirectSignOut: 'http://localhost:4200/',
       responseType: 'token', // 'code' or 'token', note that REFRESH token will only be generated when the responseType is code
     },
+  },
+  Storage: {
+    AWSS3: {
+      //REQUIRED -  Amazon S3 bucket name
+      bucket: 'auction9-auction-photos',
+
+      //OPTIONAL -  Amazon service region
+      region: 'eu-west-1'
+    }
   },
 });
 

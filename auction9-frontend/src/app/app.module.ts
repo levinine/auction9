@@ -22,6 +22,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Components
 import { AppComponent } from './app.component';
@@ -77,6 +78,7 @@ import { AuthGuard } from './auth/auth.guard';
     MatTooltipModule,
     HttpClientModule,
     MatSnackBarModule,
+    NgbModule,
   ],
   // services
   providers: [
