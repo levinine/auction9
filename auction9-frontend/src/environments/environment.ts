@@ -7,6 +7,15 @@ export const environment = {
   baseUrl: 'http://localhost:3000'
 };
 
+export const awsConfigure = {
+  region: 'eu-west-1',
+  identityPoolId: 'eu-west-1:708b1637-6afc-4698-b5a0-6c8f2cd3b52e',
+  userPoolId: 'eu-west-1_hx2LFOcz2',
+  userPoolWebClientId: '6upsbt836sfi1kdigjvnp18mvr',
+  bucket: 'auction9-auction-photos',
+  imageUrl: 'https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/'
+}
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

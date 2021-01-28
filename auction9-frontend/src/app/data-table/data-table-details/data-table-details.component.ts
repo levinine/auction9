@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HistoryDialogComponent } from 'src/app/history-dialog/history-dialog.component';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Storage } from 'aws-amplify';
+import { awsConfigure } from 'src/environments/environment';
 
 @Component({
   selector: 'app-data-table-details',
@@ -37,7 +38,7 @@ export class DataTableDetailsComponent implements OnInit {
     Storage.list(`${auctionId}`).then(data => {
       data.forEach(res => {
         // generate url
-        this.imageUrl = `https://auction9-auction-photos.s3-eu-west-1.amazonaws.com/public/${res.key}`;
+        this.imageUrl = `${awsConfigure.imageUrl}${res.key}`;
         this.images.push(this.imageUrl);
       });
     });
