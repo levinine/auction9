@@ -37,8 +37,9 @@ export const getAuction = async (event, context) => {
     // return ID of auction from path
     let auctionId = event.pathParameters.id;
     // return auction + numberOfBids info
-    let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
+    let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
+    console.log(resultsQuery);
     return generateResponse(200, resultsQuery);
   } catch (error) {
     console.log(error);
@@ -73,7 +74,14 @@ export const postAuction = async (event, context) => {
     let reqBody = JSON.parse(event.body);
     let startDate = new Date(reqBody.date_from).valueOf();
     let endDate = new Date(reqBody.date_to).valueOf();
-    let status = startDate > Date.now() ? statuses.inactive : statuses.active;
+    let status = '';
+    if (startDate > Date.now()) {
+      status = statuses.inactive;
+    } else {
+      return generateResponse(400, {
+        message: 'Not possible to create an auction which start time has passed.'
+      });
+    }
 
     if (startDate > endDate) {
       return generateResponse(400, {
@@ -276,14 +284,9 @@ export const postNewBid = async (event, context) => {
         // current userid hardcoded
         await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
-        let updatedResultsAuction = await mysql.query('SELECT * FROM tbl_auction WHERE auctionID=?', [auctionId]);
-        let numberOfBids = await mysql.query('SELECT COUNT(*) FROM tbl_user_auction WHERE auctionID=?', [auctionId]);
+        let updatedResultsAuction = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
         await mysql.end();
-        let totalNumberOfBids = numberOfBids[0]['COUNT(*)'];
-        return generateResponse(200, {
-          updatedResultsAuction,
-          totalNumberOfBids
-        });
+        return generateResponse(200, updatedResultsAuction);
       } else {
         return generateResponse(400, {
           message: 'New bid must be greater then current price.'
