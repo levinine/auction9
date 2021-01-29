@@ -84,12 +84,12 @@ export class AuctionService {
      }).toPromise();
    }
 
-   /* realizeAuctionById - update status to inactive
+   /* realizeAuctionById - set field 'realized' to true
    * Method: PUT
    * Path: /myauctions/id
    */
-   realizeAuctionById(auction, status) {
-     return this.http.put(`${environment.baseUrl}/myauctions/${auction.auctionID}`, { auction, changeStatus: status }).toPromise();
+   realizeAuctionById(auction) {
+     return this.http.put(`${environment.baseUrl}/myauctions/${auction.auctionID}`, { auction }).toPromise();
    }
 
   /* postNewBid - create new bid for selected auction

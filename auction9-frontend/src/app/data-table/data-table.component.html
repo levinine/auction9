@@ -41,16 +41,16 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
         <td mat-cell *matCellDef="let row">
-          <ng-template [ngIf]="row.status === 'INACTIVE'">
+          <ng-template [ngIf]="row.status === statuses.inactive">
             <span class="badge badge-secondary">Inactive</span>
           </ng-template>
-          <ng-template [ngIf]="row.status === 'ACTIVE'">
+          <ng-template [ngIf]="row.status === statuses.active">
             <span class="badge badge-primary">Active</span>
           </ng-template>
-          <ng-template [ngIf]="row.status === 'FINISHED'">
+          <ng-template [ngIf]="row.status === statuses.finished">
             <span class="badge badge-success">Finished</span>
           </ng-template>
-          <ng-template [ngIf]="row.status === 'REALIZED'">
+          <ng-template [ngIf]="row.status === statuses.realized">
             <span class="badge badge-sold">Realized</span>
           </ng-template>
         </td>
@@ -77,7 +77,7 @@
               mat-mini-fab
               color="primary"
               (click)="onEditClick(row.auctionID)"
-              [disabled]="row.status !== 'INACTIVE' ? 'disabled' : null">
+              [disabled]="row.status !== statuses.inactive ? 'disabled' : null">
               <span class="material-icons">edit</span>
             </button>
           </td>
@@ -88,7 +88,7 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Stop </th>
           <td mat-cell *matCellDef="let row">
             <!-- button enabled only if auction is 'active'. This will change status to 'inactive' -->
-            <button mat-mini-fab color="warn" [disabled]="row.status === 'ACTIVE' ? null : 'disabled'" (click)="stopActiveAuctionID(row.auctionID)">
+            <button mat-mini-fab color="warn" [disabled]="row.status === statuses.active ? null : 'disabled'" (click)="stopActiveAuctionID(row.auctionID)">
               <mat-icon>stop</mat-icon>
             </button>
           </td>
@@ -98,8 +98,8 @@
       <ng-container matColumnDef="confirm">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Confirm </th>
           <td mat-cell *matCellDef="let row">
-            <!-- button enabled only if auction is 'FINISHED'. This will change status to 'REALIZED' -->
-            <button mat-mini-fab class="confirm-success" [disabled]="row.status === 'FINISHED' ? null : 'disabled'" (click)="realizeFinishedAuctionID(row, 'REALIZED')">
+            <!-- button enabled only if auction is 'finished'. This will set 'realized' to true -->
+            <button mat-mini-fab class="confirm-success" [disabled]="row.status === statuses.finished ? null : 'disabled'" (click)="realizeFinishedAuctionID(row)">
               <mat-icon>check</mat-icon>
             </button>
           </td>

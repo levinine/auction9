@@ -1,10 +1,43 @@
+import moment from 'moment';
+
 // statuses obj that can be used inside functions
 const statuses = {
-  inactive: 'INACTIVE',
-  active: 'ACTIVE',
-  finished: 'FINISHED',
-  realized: 'REALIZED',
+  inactive: 'inactive',
+  active: 'active',
+  finished: 'finished',
+  realized: 'realized',
 };
+
+// Setting default values for stopped and realized
+const getStatus = (start, end, stopped = false, realized = false) => {
+  let startDate = start.valueOf();
+  let endDate = end.valueOf();
+
+  // If 'stop' filed is true, auction is inactive
+  if (stopped) {
+    return statuses.inactive;
+  }
+  // If 'realized' field is true, auction is realized
+  else if (realized) {
+    return statuses.realized;
+  }
+  // For other cases, we compare start and end date to each other/current date
+  else {
+    // If start date is in the future, the auction is inactive
+    if (startDate > Date.now()) {
+      return statuses.inactive;
+    }
+    // If start date is in the past and end date in the future, the auction is active
+    else if (startDate < Date.now() && endDate > Date.now()) {
+      return statuses.active;
+    }
+    // If both, start and end dates have passed, the auction has finished
+    else if (startDate < Date.now() && endDate < Date.now()) {
+      return statuses.finished;
+    }
+  }
+};
+
 
 // Require for mysql connection
 // Configuration is in serverless.yml file inside 'environment:'
@@ -30,7 +63,7 @@ const generateResponse = (statusCode, body) => {
 };
 
 /* getAuction - will return selected auction from DB
- * GET: /auctions/id - we get auction by ID
+ * GET: /auctions/id - get auction by ID
  */
 export const getAuction = async (event, context) => {
   try {
@@ -39,7 +72,6 @@ export const getAuction = async (event, context) => {
     // return auction + numberOfBids info
     let resultsQuery = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
     await mysql.end();
-    console.log(resultsQuery);
     return generateResponse(200, resultsQuery);
   } catch (error) {
     console.log(error);
@@ -54,9 +86,16 @@ export const getAuction = async (event, context) => {
  */
 export const getActiveAuctions = async (event, context) => {
   try {
-    let resultsActiveAuctions = await mysql.query('SELECT * FROM tbl_auction WHERE status=?', [statuses.active]);
+    // eliminate stopped and realized auctions at the beggining
+    let auctions = await mysql.query('SELECT * FROM tbl_auction WHERE stopped=false and realized=false');
     await mysql.end();
-    return generateResponse(200, resultsActiveAuctions);
+    let activeAuctions = [];
+    [...auctions].forEach((auction) => {
+      if (getStatus(auction.date_from, auction.date_to) === statuses.active) {
+        activeAuctions.push(auction);
+      }
+    });
+    return generateResponse(200, activeAuctions);
   }
   catch (error) {
     console.log(error);
@@ -72,24 +111,20 @@ export const getActiveAuctions = async (event, context) => {
 export const postAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
-    let startDate = new Date(reqBody.date_from).valueOf();
-    let endDate = new Date(reqBody.date_to).valueOf();
-    let status = '';
-    if (startDate > Date.now()) {
-      status = statuses.inactive;
-    } else {
+    let startDate = new Date(reqBody.date_from);
+    let endDate = new Date(reqBody.date_to);
+
+    if (getStatus(startDate, endDate) === statuses.active) {
       return generateResponse(400, {
         message: 'Not possible to create an auction which start time has passed.'
       });
     }
-
-    if (startDate > endDate) {
+    if (startDate.valueOf() > endDate.valueOf()) {
       return generateResponse(400, {
         message: "End date must be after start date."
       });
     }
-
-    await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `status`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?)',[reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, status, reqBody.created_by]);
+    await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `stopped`, `realized`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, false, false, reqBody.created_by]);
     let lastInsertedID = await mysql.query('SELECT LAST_INSERT_ID()');
     await mysql.end();
     return generateResponse(200, {
@@ -147,27 +182,59 @@ export const getUserAuctions = async (event, context) => {
  */
 export const updateAuction = async (event, context) => {
   let reqBody = JSON.parse(event.body);
-  try {
-    await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=? WHERE auctionID=?', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
-    await mysql.end();
-    return generateResponse(200, {
-      message: 'Auction updated successfully.'
-    });
-  } catch (error) {
-    console.log(error);
+  let startDate = new Date(reqBody.date_from);
+  let endDate = new Date(reqBody.date_to);
+
+  if (getStatus(startDate, endDate) === statuses.active) {
     return generateResponse(400, {
-      message: 'There was an error updating an auctions.'
+      message: 'Not possible to update an active auction.'
     });
+  }
+  if (startDate.valueOf() > endDate.valueOf()) {
+    return generateResponse(400, {
+      message: "End date must be after start date."
+    });
+  }
+  // Regular update of inactive auction
+  if (!reqBody.stopped) {
+    try {
+      // Just add stopped=false
+      await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=?, stopped=false WHERE auctionID=?', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
+      await mysql.end();
+      return generateResponse(200, {
+        message: 'Auction updated successfully.'
+      });
+    } catch (error) {
+      console.log(error);
+      return generateResponse(400, {
+        message: 'There was an error updating stopped auction.'
+      });
+    }
+  }
+  // Reactivating stopped auction
+  else {
+    try {
+      await mysql.query('UPDATE tbl_auction SET title=?, description=?, date_from=?, date_to=?, price=? WHERE auctionID=?', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, reqBody.id]);
+      await mysql.end();
+      return generateResponse(200, {
+        message: 'Auction updated successfully.'
+      });
+    } catch (error) {
+      console.log(error);
+      return generateResponse(400, {
+        message: 'There was an error updating an auction.'
+      });
+    }
   }
 };
 
- /* stopActiveAuction - will update status for auction to 'inactive'
- * PUT: /myauctions/id/stop
- */
+/* stopActiveAuction - sets 'stopped' field to true
+* PUT: /myauctions/id/stop
+*/
 export const stopActiveAuction = async (event, context) => {
   try {
     let auctionId = event.pathParameters.id;
-    await mysql.query(`UPDATE tbl_auction SET status=? WHERE auctionID=?`, [statuses.inactive, auctionId]);
+    await mysql.query(`UPDATE tbl_auction SET stopped=true WHERE auctionID=?`, [auctionId]);
     await mysql.end();
     return generateResponse(200, {
       message: 'Auction has been stopped successfully.'
@@ -198,15 +265,6 @@ export const getUserWonAuctions = async (event, context) => {
   }
 };
 
-
-/* Allowed status changes:
- * order status: INACTIVE -> ACTIVE -> FINISHED -> REALIZED
- * current -> new :
- * INACTIVE -> ACTIVE   [x]
- * ACTIVE -> INACTIVE   [x]
- * ACTIVE -> FINISHED   [x]
- * FINISHED -> REALIZED [x]
- */
 /* realizeFinishedAuction - will update status for auction to 'realized'
  * PUT: /myauctions/id
  */
@@ -214,47 +272,20 @@ export const realizeFinishedAuction = async (event, context) => {
   try {
     let reqBody = JSON.parse(event.body);
     let auctionId = reqBody.auction.auctionID;
-    let currentStatus = await mysql.query(`SELECT status FROM tbl_auction WHERE auctionID=?`,  [auctionId]);
-    await mysql.end();
-    // requested status to be changed into
-    let reqStatus = reqBody.changeStatus;
-    // check allowed status order
-    if (reqStatus === statuses.realized) { // FINISHED -> REALIZED
-      if (currentStatus[0].status === statuses.finished) {
-        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
-          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
-        await mysql.end();
-        return generateResponse(200, {
-          message: 'Auction successfully realized.'
-        });
-      }
-    } else if (reqStatus === statuses.active) { // INACTIVE -> ACTIVE
-      if (currentStatus[0].status === statuses.inactive) {
-        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
-          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
-        await mysql.end();
-        return generateResponse(200, {
-          message: 'Auction successfully activated.'
-        });
-      }
-    } else if (reqStatus === statuses.inactive || reqStatus === statuses.finished) { // ACTIVE -> INACTIVE or ACTIVE -> FINISHED
-      if (currentStatus[0].status === statuses.active) {
-        await mysql.query(`UPDATE tbl_auction SET title=?, description=?, price=?, status=? WHERE auctionID=?`,
-          [reqBody.auction.title, reqBody.auction.description, reqBody.auction.price, reqStatus, auctionId]);
-        await mysql.end();
-        return generateResponse(200, {
-          message: 'Auction successfully stopped/finished.'
-        });
-      }
-    } else {
-      return generateResponse(400, {
-        message: 'Auction status could not be changed.'
+    let startDate = new Date(reqBody.auction.date_from);
+    let endDate = new Date(reqBody.auction.date_to);
+    // Auction can be realized only if it's finished
+    if (getStatus(startDate, endDate) === statuses.finished) {
+      await mysql.query(`UPDATE tbl_auction SET realized=true WHERE auctionID=?`, [auctionId]);
+      mysql.end();
+      return generateResponse(200, {
+        message: 'Auction successfully realized.'
       });
     }
   } catch (error) {
     console.log(error);
     return generateResponse(400, {
-      message: 'There was an error while updating auction status.'
+      message: 'There was an error realizing auction.'
     });
   }
 };
@@ -267,38 +298,31 @@ export const postNewBid = async (event, context) => {
     let reqBody = JSON.parse(event.body);
     let auctionId = event.pathParameters.id;
     let newBid = reqBody.newBid;
-    let resultsAuction = await mysql.query('SELECT price, status FROM tbl_auction WHERE auctionID=?', [auctionId]);
+    let resultsAuction = await mysql.query('SELECT date_from, date_to, price FROM tbl_auction WHERE auctionID=? and stopped=false and realized=false', [auctionId]);
     await mysql.end();
-    // checking if auction is active
-    if (resultsAuction[0].status === statuses.active) {
-      // checking if newbid is greater then current price
+    let startDate = new Date(resultsAuction[0].date_from);
+    let endDate = new Date(resultsAuction[0].date_to);
+
+    // Check if auction is active
+    if (getStatus(startDate, endDate) === statuses.active) {
+      // Check if new bid price is greater than current price
       if (newBid > resultsAuction[0].price) {
-        // date formatting
-        let bidDate = Date.now();
-        let todayDate = new Date(bidDate);
-        let currentYear = todayDate.getFullYear();
-        let currentMonth = todayDate.getMonth() + 1;
-        let currentDay = todayDate.getDate();
-        let currentHours = todayDate.getHours();
-        let currentMinutes = todayDate.getMinutes();
-        let currentSeconds = todayDate.getSeconds();
-        let formattedTodayDate = currentYear + '-' + currentMonth + '-' + currentDay + ' ' + currentHours + ':' + currentMinutes + ':' + currentSeconds;
-        // first create bid -> update current price with new bid
-        // current userid hardcoded
-        await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, formattedTodayDate]);
+        let dateTimeNow = moment(Date.now()).format("YYYY-MM-DD hh:mm");
+        // First create bid, then update current price with new bid
+        await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, dateTimeNow]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
         let updatedResultsAuction = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
         await mysql.end();
         return generateResponse(200, updatedResultsAuction);
       } else {
         return generateResponse(400, {
-          message: 'New bid must be greater then current price.'
+          message: 'New bid must be greater than current price.'
         });
       }
     } else {
-        return generateResponse(400, {
-          message: 'Current auction is not Active.'
-        });
+      return generateResponse(400, {
+        message: 'Current auction is not active.'
+      });
     }
   }
   catch (error) {

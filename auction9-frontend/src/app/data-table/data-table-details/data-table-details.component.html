@@ -15,18 +15,18 @@
     </ngb-carousel>
   <!-- End carousel -->
   	<h2>The highest current bid: {{auction?.price}} din</h2>
-  	<h3>Remaining time: 1d 14h <i>({{auction?.date_to | date: 'medium'}})</i></h3>
+    <h3>Remaining time: {{remainingTime}}</h3>
   	<h4>Status:
-  		<ng-template [ngIf]="auction?.status === 'INACTIVE'">
+  		<ng-template [ngIf]="auction?.status === statuses.inactive">
         <span class="badge badge-secondary">Inactive</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'ACTIVE'">
+      <ng-template [ngIf]="auction?.status === statuses.active">
         <span class="badge badge-primary">Active</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'FINISHED'">
+      <ng-template [ngIf]="auction?.status === statuses.finished">
         <span class="badge badge-success">Finished</span>
       </ng-template>
-      <ng-template [ngIf]="auction?.status === 'REALIZED'">
+      <ng-template [ngIf]="auction?.status === statuses.realized">
         <span class="badge badge-sold">Realized</span>
       </ng-template>
   	</h4>
@@ -54,10 +54,10 @@
           placeholder="Offer must be greater then: {{auction?.price}} din"
           required>
     	</mat-form-field>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        [disabled]="auction?.status === 'ACTIVE' && bidOffer.value > auction?.price ? null : 'disabled'" 
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="auction?.status === statuses.active && bidOffer.value > auction?.price ? null : 'disabled'"
         (click)="postNewBid(auction, bidOffer.value)">
         Bid
       </button>

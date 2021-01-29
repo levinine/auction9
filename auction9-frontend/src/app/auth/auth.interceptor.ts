@@ -13,7 +13,6 @@ import { AppComponent } from '../app.component';
  * @implements {HttpInterceptor}
  */
 
-
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
@@ -25,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
       .pipe(
         switchMap((auth: any) => {
           AppComponent.isLoggedIn = true;
-          // Clone request, attach auth header and return in
+          // Clone request and attach jwt token to it
           let jwt = auth.accessToken.jwtToken;
           let with_auth_request = request.clone({
             setHeaders: {

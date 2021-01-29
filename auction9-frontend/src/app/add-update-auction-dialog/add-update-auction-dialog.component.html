@@ -48,7 +48,6 @@
 
   <!-- Date picker -->
   <div formGroupName="dateGroup">
-
   <mat-form-field appearance="fill" class="datepicker">
     <mat-label>Start and end date</mat-label>
     <mat-date-range-input
@@ -75,6 +74,9 @@
     </mat-error>
     <mat-error *ngIf="addOrUpdateAuctionForm.get('dateGroup.startDate').hasError('required')">
       You have to pick start and end date
+    </mat-error>
+    <mat-error *ngIf="addOrUpdateAuctionForm.get('dateGroup.startDate').hasError('matDatepickerMin')">
+      Start date can't be in the past
     </mat-error>
   </mat-form-field>
   </div>
@@ -134,13 +136,14 @@
     <input multiple class="input" type="file" (change)="selectFiles($event)">
   </div>
 
-  <!-- Add/update article button -->
+  <!-- Buttons -->
   <div mat-dialog-actions align="center">
     <button
       mat-raised-button
       mat-dialog-close>
         Cancel
     </button>
+    <!-- Create auction -->
     <button
       mat-raised-button
       mat-dialog-close
@@ -151,6 +154,7 @@
       *ngIf="!dialogData.update">
         Create
     </button>
+    <!-- Update auction -->
     <button
       mat-raised-button
       mat-dialog-close

@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuctionService } from '../services/auction.service';
 import { AddUpdateAuctionDialogComponent } from '../add-update-auction-dialog/add-update-auction-dialog.component';
+import { statuses } from '../statuses/statuses';
 
 // our data structure
 export interface AuctionData {
@@ -35,7 +36,7 @@ export class DataTableComponent implements AfterViewInit {
   @Input() tableHeaders: string[];
   // stop method from user-auctions
   @Input() stopActiveAuction: Function;
-  // confirm method from user-auctions
+  // confirm method from user-`auctions`
   @Input() realizeAuction: Function;
 
   dataSource: MatTableDataSource<AuctionData>;
@@ -47,7 +48,6 @@ export class DataTableComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource(Array.from(this.tableData));
-
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.cdRef.detectChanges();
@@ -78,7 +78,12 @@ export class DataTableComponent implements AfterViewInit {
     this.stopActiveAuction(id);
   }
 
-  realizeFinishedAuctionID(auction, status) {
-    this.realizeAuction(auction, status);
+  realizeFinishedAuctionID(auction) {
+    this.realizeAuction(auction);
+  }
+
+  // Need the getter for using enum in html
+  get statuses(): typeof statuses {
+    return statuses;
   }
 }
