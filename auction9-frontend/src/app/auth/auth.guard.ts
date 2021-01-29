@@ -22,6 +22,7 @@ export class AuthGuard implements CanActivate {
     return Auth.currentAuthenticatedUser().then(() => {
       return true;
     }).catch(() => {
+      // Redirect user to login page when he tries to access route he's not authorized for
       Auth.federatedSignIn();
       return false;
     });

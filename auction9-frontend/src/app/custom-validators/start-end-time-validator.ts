@@ -13,12 +13,12 @@ export const timeValidator = (group: FormGroup): { [key: string]: boolean } => {
   const startTime = group.get('startTime').value;
   const endTime = group.get('endTime').value;
 
+  // If user selects same day for start and end date, end time can't be before start time
   if (startTime !== '' && endTime !== '') {
     if (startTime >= endTime) {
       return { startTimeLessThanEndTime: true };
     }
   }
-
   return null;
 };
 

@@ -23,6 +23,7 @@ export class AddUpdateAuctionDialogComponent {
   selectedFiles: any;
   minDate: string;
   minTime: string;
+  isStopped: boolean;
 
   constructor(private auctionService: AuctionService,
     private snackBar: MatSnackBar,
@@ -44,6 +45,7 @@ export class AddUpdateAuctionDialogComponent {
   }
 
   inputChange() {
+    // If start date is equal to today, min time can't be in the past (can't create an active auction)
     if (moment(this.addOrUpdateAuctionForm.get('dateGroup.startDate').value).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")) {
       if (this.addOrUpdateAuctionForm.controls.startTime.value < moment(new Date()).format("hh:mm")) {
         this.minTime = moment(new Date()).format('hh:mm');
@@ -51,9 +53,7 @@ export class AddUpdateAuctionDialogComponent {
     }
   }
 
-
   renderForm(auction): void {
-
     this.addOrUpdateAuctionForm = new FormGroup({
       title: new FormControl(this.update ? auction.title : '', [
         Validators.required,
@@ -83,11 +83,15 @@ export class AddUpdateAuctionDialogComponent {
         Validators.required
       ]),
     }, {
+      // Custom validators for datetime
       validators: [
         timeValidator, minStartTimeValidator
       ],
       updateOn: "change"
     });
+
+    // Set flag we use in onUpdateAuctionClick (activate auction)
+    this.isStopped = this.update ? (auction.stopped ? true : false) : false;
   }
 
   // Dates formatting
@@ -118,7 +122,6 @@ export class AddUpdateAuctionDialogComponent {
       let startDateTime = this.setDates().startDateTime;
       let endDateTime = this.setDates().endDateTime;
 
-      // Until we implement user sign in, created_by will be hardcoded user with id=1
       this.auctionService.addAuction(
         {
           "title": this.addOrUpdateAuctionForm.controls.title.value,
@@ -129,6 +132,7 @@ export class AddUpdateAuctionDialogComponent {
           "created_by": 1
         }).then((data: any) => {
 
+          // Uploading images to bucked named after previously created auction's ID
           this.uploadFile(data.auctionID);
 
           this.snackBar.open('Auction created successfully.', '',
@@ -154,27 +158,55 @@ export class AddUpdateAuctionDialogComponent {
       let startDateTime = this.setDates().startDateTime;
       let endDateTime = this.setDates().endDateTime;
 
-      this.auctionService.updateAuction(
-        {
-          "id": this.auctionID,
-          "title": this.addOrUpdateAuctionForm.controls.title.value,
-          "description": this.addOrUpdateAuctionForm.controls.description.value,
-          "price": this.addOrUpdateAuctionForm.controls.price.value,
-          "date_from": startDateTime,
-          "date_to": endDateTime,
-        }).then(() => {
-          this.snackBar.open('Auction updated successfully.', '',
-            {
-              duration: 2000,
-              panelClass: ['light-snackbar']
-            });
-        }).catch((err: any) => {
-          this.snackBar.open('Unable to update auction.', '',
-            {
-              duration: 2000,
-              panelClass: ['light-snackbar']
-            });
-        });
+      // Regular auction update
+      if (!this.isStopped) {
+        this.auctionService.updateAuction(
+          {
+            "id": this.auctionID,
+            "title": this.addOrUpdateAuctionForm.controls.title.value,
+            "description": this.addOrUpdateAuctionForm.controls.description.value,
+            "price": this.addOrUpdateAuctionForm.controls.price.value,
+            "date_from": startDateTime,
+            "date_to": endDateTime,
+          }).then(() => {
+            this.snackBar.open('Auction updated successfully.', '',
+              {
+                duration: 2000,
+                panelClass: ['light-snackbar']
+              });
+          }).catch((err: any) => {
+            this.snackBar.open('Unable to update auction.', '',
+              {
+                duration: 2000,
+                panelClass: ['light-snackbar']
+              });
+          });
+      }
+      // Activating previously stopped function
+      else {
+        this.auctionService.updateAuction(
+          {
+            "id": this.auctionID,
+            "title": this.addOrUpdateAuctionForm.controls.title.value,
+            "description": this.addOrUpdateAuctionForm.controls.description.value,
+            "price": this.addOrUpdateAuctionForm.controls.price.value,
+            "date_from": startDateTime,
+            "date_to": endDateTime,
+            "stopped": false
+          }).then(() => {
+            this.snackBar.open('Auction updated successfully.', '',
+              {
+                duration: 2000,
+                panelClass: ['light-snackbar']
+              });
+          }).catch((err: any) => {
+            this.snackBar.open('Unable to update auction.', '',
+              {
+                duration: 2000,
+                panelClass: ['light-snackbar']
+              });
+          });
+      }
     }
   }
 
@@ -182,7 +214,7 @@ export class AddUpdateAuctionDialogComponent {
   // Files upload
   uploadFile(auctionID: number) {
     [...this.selectedFiles].forEach(file => {
-      // `${auctionID}/ - folder name
+      // `${auctionID}/ - folder name (same as auctionID so we can access it later)
       // ${file.name}` - file name
       Storage.put(`${auctionID}/${file.name}`, file, {
         contentType: 'image'

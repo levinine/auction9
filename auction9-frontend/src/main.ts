@@ -46,7 +46,7 @@ Amplify.configure({
       bucket: awsConfigure.bucket,
 
       //OPTIONAL -  Amazon service region
-      region: awsConfigure
+      region: awsConfigure.region
     }
   },
 });

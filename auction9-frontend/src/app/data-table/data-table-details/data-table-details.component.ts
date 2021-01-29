@@ -8,6 +8,7 @@ import { Storage } from 'aws-amplify';
 import { awsConfigure } from 'src/environments/environment';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { getStatus, statuses } from 'src/app/statuses/statuses';
 
 @Component({
   selector: 'app-data-table-details',
@@ -22,6 +23,7 @@ export class DataTableDetailsComponent implements OnInit {
   endDate: any;
   endTime: any;
   endDateTime: any;
+  remainingTime: any;
   totalNumberOfBids: any;
 
   constructor(private router: ActivatedRoute,
@@ -37,18 +39,31 @@ export class DataTableDetailsComponent implements OnInit {
     // get auction id from url
     const auctionId = this.router.snapshot.params['id'];
     this.auctionService.getAuctionById(auctionId).then((data: any) => {
+      // First we have to set status because we no longer get it from database
+      data.forEach(auction => {
+        auction.status = getStatus(auction.date_from, auction.date_to, auction.stopped, auction.realized);
+      });
       // save data
       this.auction = data[0];
       this.totalNumberOfBids = data[0].numberOfBids;
 
+      // Date formatting
       this.endDate = moment(this.auction.date_to).format("YYYY-MM-DD");
       this.endTime = moment(this.auction.date_to).format("HH:mm");
       this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
+
+      // Calculating remaining time
+      let msec = new Date(this.endDateTime).valueOf() - Date.now();
+      let hh = Math.floor(msec / 1000 / 60 / 60);
+      msec -= hh * 1000 * 60 * 60;
+      let mm = Math.floor(msec / 1000 / 60);
+      msec -= mm * 1000 * 60;
+      this.remainingTime = `${hh} hours ${mm} minutes`;
     });
 
     Storage.list(`${auctionId}`).then(data => {
       data.forEach(res => {
-        // generate url
+        // Generate image url
         this.imageUrl = `${awsConfigure.imageUrl}${res.key}`;
         this.images.push(this.imageUrl);
       });
@@ -69,17 +84,22 @@ export class DataTableDetailsComponent implements OnInit {
       this.auction.price = data[0].price;
       this.totalNumberOfBids = data[0].numberOfBids;
       this.snackBar.open(`Bid created successfully for Auction ID: ${this.auction.auctionID}`, '',
-      {
-        duration: 2000,
-        panelClass: ['light-snackbar']
-      });
-      (err: any) => {
-        this.snackBar.open('Unable to create bid.', '',
         {
           duration: 2000,
           panelClass: ['light-snackbar']
         });
+      (err: any) => {
+        this.snackBar.open('Unable to create bid.', '',
+          {
+            duration: 2000,
+            panelClass: ['light-snackbar']
+          });
       }
     });
+  }
+
+  // Need the getter for using enum in html
+  get statuses(): typeof statuses {
+    return statuses;
   }
 }

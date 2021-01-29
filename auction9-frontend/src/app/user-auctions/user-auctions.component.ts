@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuctionService } from '../services/auction.service';
 import * as moment from 'moment';
-import { timeValidator } from '../custom-validators/start-end-time-validator';
+import { statuses, getStatus } from '../statuses/statuses';
 
 @Component({
   selector: 'app-user-auctions',
@@ -11,67 +11,69 @@ import { timeValidator } from '../custom-validators/start-end-time-validator';
 export class UserAuctionsComponent implements OnInit {
   tableData: any[];
   tableHeaders: string[];
-  // date formats
-  startDate: any;
-  startTime: any;
-  startDateTime: any;
-  endDate: any;
-  endTime: any;
-  endDateTime: any;
 
   constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
-    this.auctionService.getUserAuctions().then((data: []) => {
+    this.auctionService.getUserAuctions().then((data: any) => {
+      // First we have to set status because we no longer get it from database
+      data.forEach(auction => {
+        auction.status = getStatus(auction.date_from, auction.date_to, auction.stopped, auction.realized);
+      });
       this.tableData = Array.from(data);
       // format dates for each element
-      this.tableData.forEach((element) => {
-        // start date
-        this.startDate = moment(element.date_from).format("YYYY-MM-DD");
-        this.startTime = moment(element.date_from).format("HH:mm");
-        this.startDateTime = moment(this.startDate + ' ' + this.startTime).format("YYYY-MM-DD HH:mm");
-        element.date_from = this.startDateTime; // final format
-
-        // end date
-        this.endDate = moment(element.date_to).format("YYYY-MM-DD");
-        this.endTime = moment(element.date_to).format("HH:mm");
-        this.endDateTime = moment(this.endDate + ' ' + this.endTime).format("YYYY-MM-DD HH:mm");
-        element.date_to = this.endDateTime;
+      this.tableData.forEach((auction) => {
+        auction.date_from = moment(auction.date_from).format("YYYY-MM-DD HH:mm");
+        auction.date_to = moment(auction.date_to).format("YYYY-MM-DD HH:mm");
       });
       this.tableHeaders = ['auctionID', 'title', 'price', 'start_date', 'end_date', 'status', 'info', 'edit', 'stop', 'confirm'];
     });
   }
 
-  // call stop service and live update table if it's success
+
+  // call stop service
   stopActiveAuction(auctionId) {
     if (confirm('Are you sure you want to STOP this auction?')) {
-      this.auctionService.stopAuctionById(auctionId).then((data) => {
-        // live refresh table
-        this.tableData.forEach((element) => {
-          if (element.auctionID === auctionId) {
-            if (element.status === 'ACTIVE') {
-              element.status = 'INACTIVE';
-            }
-          }
+      this.auctionService.stopAuctionById(auctionId).then(() => {
+
+        // Update
+        this.auctionService.getUserAuctions().then((data: any) => {
+          data.forEach(auction => {
+            auction.status = getStatus(auction.date_from, auction.date_to, auction.stopped, auction.realized);
+          });
+          this.tableData = Array.from(data);
+        });
+        this.tableData.forEach((auction) => {
+          auction.date_from = moment(auction.date_from).format("YYYY-MM-DD HH:mm");
+          auction.date_to = moment(auction.date_to).format("YYYY-MM-DD HH:mm");
         });
       });
     }
   }
 
-  // creator of auction will confirm that he sold item to the winner
-  realizeAuction(auction, status) {
-    if (confirm('Are you sure you want to REALIZE this auction?')) {
-      this.auctionService.realizeAuctionById(auction, status).then((data) => {
-        this.tableData.forEach((element) => {
-          if (element.auctionID === auction.auctionID) {
-            if (element.status === 'FINISHED') {
-              element.status = 'REALIZED';
-            } else {
-              alert('You can only confirm auction if it is finished');
-            }
-          }
-        });
-      });
+  // Creator of auction will confirm that he sold item to the winner
+  realizeAuction(auction) {
+    // Auction can be realized only if it's finished
+    if (getStatus(auction.date_from, auction.date_to) === statuses.finished) {
+      if (confirm('Are you sure that you want to realize this auction?')) {
+        this.auctionService.realizeAuctionById(auction).then(() => {
+          this.tableData.forEach(element => {
+            element.realized = true;
+
+            // Update
+            this.auctionService.getUserAuctions().then((data: any) => {
+              data.forEach(auction => {
+                auction.status = getStatus(auction.date_from, auction.date_to, auction.realized);
+              });
+              this.tableData = Array.from(data);
+            });
+            this.tableData.forEach((auction) => {
+              auction.date_from = moment(auction.date_from).format("YYYY-MM-DD HH:mm");
+              auction.date_to = moment(auction.date_to).format("YYYY-MM-DD HH:mm");
+            });
+          });
+        })
+      }
     }
   }
 }
