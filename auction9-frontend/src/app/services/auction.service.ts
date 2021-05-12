@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { AppComponent } from '../app.component';
 
 @Injectable({
   providedIn: 'root'
@@ -50,8 +51,7 @@ export class AuctionService {
     return this.http.get(`${environment.baseUrl}/userAuctions`,
       {
         responseType: 'json',
-        // currently hard coded user ID
-        params: { created_by: '2' },
+        params: { created_by: AppComponent.loggedUser },
       }).toPromise();
   }
 
@@ -79,8 +79,7 @@ export class AuctionService {
      return this.http.get(`${environment.baseUrl}/wonauctions`,
      {
        responseType: 'json',
-       // same as getMyAuctions hard coded user ID
-       params: { userId: '2' },
+       params: { email: AppComponent.loggedUser },
      }).toPromise();
    }
 
@@ -99,7 +98,8 @@ export class AuctionService {
    createNewBid(auction, newBid) {
      return this.http.post(`${environment.baseUrl}/auctions/${auction.auctionID}/bids`,
        {
-         newBid: newBid
+         newBid: newBid,
+         email: AppComponent.loggedUser
        }).toPromise();
    }
 

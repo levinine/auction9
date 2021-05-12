@@ -21,16 +21,17 @@ export function getStatus(start, end, stopped = false, realized = false) {
   }
   // For other cases, we compare start and end date to each other/current date
   else {
+    const currentDate = Date.now();
     // If start date is in the future, the auction is inactive
     if (startDate > Date.now()) {
       return statuses.inactive;
     }
     // If start date is in the past and end date in the future, the auction is active
-    else if (startDate < Date.now() && endDate > Date.now()) {
+    else if (startDate < currentDate && endDate > currentDate) {
       return statuses.active;
     }
     // If both, start and end dates have passed, the auction has finished
-    else if (startDate < Date.now() && endDate < Date.now()) {
+    else if (startDate < currentDate && endDate < currentDate) {
       return statuses.finished;
     }
   }

@@ -31,6 +31,15 @@ provider:
     #MYSQL_PASSWORD: 12345 #root S/12345 D
 
 functions:
+  # creates user when logged in from sso
+  createUser:
+    handler: handler.createUser
+    events:
+      - http:
+          path: users/create
+          method: post
+          cors: true
+
   # return 'auction' by id
   getAuction:
     handler: handler.getAuction
@@ -39,7 +48,7 @@ functions:
           path: auctions/{id}
           method: get
           cors: true
-          
+
   # return all 'active' auctions
   getActiveAuctions:
     handler: handler.getActiveAuctions

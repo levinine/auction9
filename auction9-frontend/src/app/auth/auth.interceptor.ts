@@ -24,6 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
       .pipe(
         switchMap((auth: any) => {
           AppComponent.isLoggedIn = true;
+          AppComponent.loggedUser = auth['idToken']['payload']['email'];
           // Clone request and attach jwt token to it
           let jwt = auth.accessToken.jwtToken;
           let with_auth_request = request.clone({
@@ -39,6 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 // Auto logout if 401 response returned from api
                 Auth.signOut();
                 AppComponent.isLoggedIn = false;
+                AppComponent.loggedUser = null;
               }
               // err.error.message will give the custom message send from the server
               const error = err.error.message || err.statusText;
@@ -53,6 +55,7 @@ export class AuthInterceptor implements HttpInterceptor {
               if (err.status === 401) {
                 Auth.signOut();
                 AppComponent.isLoggedIn = false;
+                AppComponent.loggedUser = null;
               }
               else {
                 const error = err.error.message || err.statusText;

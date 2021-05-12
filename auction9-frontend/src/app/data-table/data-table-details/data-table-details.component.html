@@ -9,11 +9,13 @@
     <ngb-carousel *ngIf="images">
       <ng-template ngbSlide *ngFor="let image of images" >
         <div class="picsum-img-wrapper">
-          <img class="carousel-image" [src]="image">
+          <img class="carousel-image" [src]="image" width="400" height="300">
         </div>
       </ng-template>
     </ngb-carousel>
   <!-- End carousel -->
+    <br/>
+    <h1>The winner is: {{auction?.winner || "Waiting..."}}</h1>
   	<h2>The highest current bid: {{auction?.price}} din</h2>
     <h3>Remaining time: {{remainingTime}}</h3>
   	<h4>Status:

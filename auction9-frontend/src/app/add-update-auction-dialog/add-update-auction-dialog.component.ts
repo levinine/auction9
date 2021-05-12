@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { minStartTimeValidator } from '../custom-validators/min-start-time-validator';
 import { timeValidator } from '../custom-validators/start-end-time-validator';
 import { AuctionService } from '../services/auction.service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-add-update-auction-dialog',
@@ -129,7 +130,7 @@ export class AddUpdateAuctionDialogComponent {
           "price": this.addOrUpdateAuctionForm.controls.price.value,
           "date_from": startDateTime,
           "date_to": endDateTime,
-          "created_by": 1
+          "created_by": AppComponent.loggedUser
         }).then((data: any) => {
 
           // Uploading images to bucked named after previously created auction's ID

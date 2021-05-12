@@ -21,7 +21,7 @@ export class HistoryDialogComponent implements OnInit {
   ngOnInit(): void {
     this.auctionService.getAuctionBids(this.auctionID).then((data: []) => {
       this.tableData = Array.from(data);
-      this.tableHeaders = ['name', 'price', 'time'];
+      this.tableHeaders = ['email', 'price', 'time'];
     });
   }
 }
