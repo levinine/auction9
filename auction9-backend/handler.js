@@ -12,7 +12,7 @@ const statuses = {
 const getStatus = (start, end, stopped = false, realized = false) => {
   let startDate = start.valueOf();
   let endDate = end.valueOf();
-
+  const currentDate = Date.now();
   // If 'stop' filed is true, auction is inactive
   if (stopped) {
     return statuses.inactive;
@@ -24,15 +24,15 @@ const getStatus = (start, end, stopped = false, realized = false) => {
   // For other cases, we compare start and end date to each other/current date
   else {
     // If start date is in the future, the auction is inactive
-    if (startDate > Date.now()) {
+    if (startDate > currentDate) {
       return statuses.inactive;
     }
     // If start date is in the past and end date in the future, the auction is active
-    else if (startDate < Date.now() && endDate > Date.now()) {
+    else if (startDate < currentDate && endDate > currentDate) {
       return statuses.active;
     }
     // If both, start and end dates have passed, the auction has finished
-    else if (startDate < Date.now() && endDate < Date.now()) {
+    else if (startDate < currentDate && endDate < currentDate) {
       return statuses.finished;
     }
   }
@@ -60,6 +60,30 @@ const generateResponse = (statusCode, body) => {
     },
     body: JSON.stringify(body)
   };
+};
+
+/* createUser - will create user in mysql
+ * GET: /users/create
+ * Body attributes:
+ *  email - user's email
+ *  externalId - user's unique flag accepted from azure sso
+ */
+export const createUser = async (event, context) => {
+  try {
+    let reqBody = JSON.parse(event.body);
+    const userExists = await mysql.query('SELECT * FROM tbl_user WHERE email=?', [reqBody.email]);
+    if (userExists.length === 0) {
+      await mysql.query('INSERT INTO tbl_user (`email`, `external_id`) VALUES (?, ?)', [reqBody.email, reqBody.externalId]);
+    }
+    await mysql.end();
+    return generateResponse(200, {
+      message: 'User profile set up successfully.'
+    });
+  } catch (error) {
+    return generateResponse(400, {
+      message: 'There was an error setting up user profile.'
+    });
+  }
 };
 
 /* getAuction - will return selected auction from DB
@@ -98,9 +122,8 @@ export const getActiveAuctions = async (event, context) => {
     return generateResponse(200, activeAuctions);
   }
   catch (error) {
-    console.log(error);
     return generateResponse(400, {
-      message: "There was an error getting an auction."
+      message: `There was an error getting an auction. ${error}`
     });
   }
 };
@@ -134,7 +157,7 @@ export const postAuction = async (event, context) => {
   }
   catch (error) {
     return generateResponse(400, {
-      message: "There was an error creating an auction."
+      message: `There was an error creating an auction. ${error}`
     });
   }
 };
@@ -146,7 +169,7 @@ export const postAuction = async (event, context) => {
 export const getAuctionBids = async (event, context) => {
   try {
     let auctionID = event.pathParameters.id;
-    let resultAuctionBids = await mysql.query('SELECT u.name, price, time FROM tbl_user_auction ua JOIN tbl_user u on (ua.userID = u.userID) WHERE auctionID=? ORDER BY price', [auctionID]);
+    let resultAuctionBids = await mysql.query('SELECT email, price, time FROM tbl_user_auction WHERE auctionID=? ORDER BY price', [auctionID]);
     await mysql.end();
     return generateResponse(200, resultAuctionBids);
   }
@@ -175,7 +198,6 @@ export const getUserAuctions = async (event, context) => {
     });
   }
 };
-
 
 /* updateAuction - updates an auction
  * PUT: /updateAuction
@@ -253,8 +275,8 @@ export const stopActiveAuction = async (event, context) => {
  */
 export const getUserWonAuctions = async (event, context) => {
   try {
-    let currentUserId = event.multiValueQueryStringParameters.userId[0];
-    let resultsUserWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUserId]);
+    let currentUser = event.multiValueQueryStringParameters.email[0];
+    let resultsUserWonAuctions = await mysql.query(`SELECT * FROM tbl_auction WHERE winner=?`, [currentUser]);
     await mysql.end();
     return generateResponse(200, resultsUserWonAuctions);
   } catch (error) {
@@ -266,6 +288,7 @@ export const getUserWonAuctions = async (event, context) => {
 };
 
 /* realizeFinishedAuction - will update status for auction to 'realized'
+ * Additionally winner of the auction will be set. In a future make a mechanism to add winner when end date passed.
  * PUT: /myauctions/id
  */
 export const realizeFinishedAuction = async (event, context) => {
@@ -276,7 +299,9 @@ export const realizeFinishedAuction = async (event, context) => {
     let endDate = new Date(reqBody.auction.date_to);
     // Auction can be realized only if it's finished
     if (getStatus(startDate, endDate) === statuses.finished) {
-      await mysql.query(`UPDATE tbl_auction SET realized=true WHERE auctionID=?`, [auctionId]);
+      let winner = await mysql.query(`SELECT email, MAX(price) from tbl_user_auction WHERE auctionID = ? GROUP BY email;`, [auctionId]);
+      winner = winner.lenght != 0 ? winner[0]['email'] : null;
+      await mysql.query('UPDATE tbl_auction SET realized=true, winner=? WHERE auctionID=?', [winner, auctionId]);
       mysql.end();
       return generateResponse(200, {
         message: 'Auction successfully realized.'
@@ -298,6 +323,7 @@ export const postNewBid = async (event, context) => {
     let reqBody = JSON.parse(event.body);
     let auctionId = event.pathParameters.id;
     let newBid = reqBody.newBid;
+    const email = reqBody.email;
     let resultsAuction = await mysql.query('SELECT date_from, date_to, price FROM tbl_auction WHERE auctionID=? and stopped=false and realized=false', [auctionId]);
     await mysql.end();
     let startDate = new Date(resultsAuction[0].date_from);
@@ -309,7 +335,7 @@ export const postNewBid = async (event, context) => {
       if (newBid > resultsAuction[0].price) {
         let dateTimeNow = moment(Date.now()).format("YYYY-MM-DD hh:mm");
         // First create bid, then update current price with new bid
-        await mysql.query('INSERT INTO tbl_user_auction (`userID`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [2, auctionId, newBid, dateTimeNow]);
+        await mysql.query('INSERT INTO tbl_user_auction (`email`, `auctionID`, `price`, `time`) VALUES (?, ?, ?, ?)', [email, auctionId, newBid, dateTimeNow]);
         await mysql.query('UPDATE tbl_auction SET price=? WHERE auctionID=?', [newBid, auctionId]);
         let updatedResultsAuction = await mysql.query('SELECT a.*, count(ua.user_auction_ID) as numberOfBids FROM tbl_auction a left join tbl_user_auction ua on a.auctionID = ua.auctionID WHERE a.auctionID=? group by a.auctionID', [auctionId]);
         await mysql.end();
