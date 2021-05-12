@@ -77,12 +77,11 @@ export const createUser = async (event, context) => {
     }
     await mysql.end();
     return generateResponse(200, {
-      message: 'External id successfully added.'
+      message: 'User profile set up successfully.'
     });
   } catch (error) {
-    console.log(error);
     return generateResponse(400, {
-      message: 'There was an error setting the external id.'
+      message: 'There was an error setting up user profile.'
     });
   }
 };
@@ -123,7 +122,6 @@ export const getActiveAuctions = async (event, context) => {
     return generateResponse(200, activeAuctions);
   }
   catch (error) {
-    console.log(error);
     return generateResponse(400, {
       message: `There was an error getting an auction. ${error}`
     });
@@ -151,7 +149,6 @@ export const postAuction = async (event, context) => {
     }
     await mysql.query('INSERT INTO tbl_auction (`title`, `description`, `date_from`, `date_to`, `price`, `stopped`, `realized`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [reqBody.title, reqBody.description, reqBody.date_from, reqBody.date_to, reqBody.price, false, false, reqBody.created_by]);
     let lastInsertedID = await mysql.query('SELECT LAST_INSERT_ID()');
-    console.log('lastInsertedID', lastInsertedID);
     await mysql.end();
     return generateResponse(200, {
       message: "Auction created successfully.",
@@ -304,7 +301,7 @@ export const realizeFinishedAuction = async (event, context) => {
     if (getStatus(startDate, endDate) === statuses.finished) {
       let winner = await mysql.query(`SELECT email, MAX(price) from tbl_user_auction WHERE auctionID = ? GROUP BY email;`, [auctionId]);
       winner = winner.lenght != 0 ? winner[0]['email'] : null;
-      await mysql.query(`UPDATE tbl_auction SET realized=true, winner=? WHERE auctionID=?`, [winner, auctionId]);
+      await mysql.query('UPDATE tbl_auction SET realized=true, winner=? WHERE auctionID=?', [winner, auctionId]);
       mysql.end();
       return generateResponse(200, {
         message: 'Auction successfully realized.'
